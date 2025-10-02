@@ -1,108 +1,112 @@
-# XML SIA Analyzer
+# XML-SIA : Extraction et validation d'espaces aériens
 
-Analyseur XML SIA (Service d'Information Aéronautique) - Outil d'inventaire et d'analyse des données aéronautiques françaises.
+Outils d'extraction et de validation pour les données XML-SIA (Système d'Information Aéronautique) version 6.0.
 
-## Description
+## 🎯 Objectif
 
-Ce projet fournit des services Python pour analyser les fichiers XML SIA export, inventorier les entités présentes et générer des rapports détaillés sur la structure des données aéronautiques.
+Extraire des espaces aériens spécifiques du fichier XML-SIA officiel avec toutes leurs dépendances (territoires, aérodromes, parties, volumes, services, fréquences) et valider la cohérence avec les spécifications officielles.
 
-## Fonctionnalités
-
-### Service d'Inventaire (`inventory/sia_entity_inventory.py`)
-- **Inventaire complet** des types d'entités XML SIA
-- **Classification intelligente** des attributs d'entités 
-- **Analyse de couverture** par rapport à la documentation SIA v6.0
-- **Formats de sortie multiples** :
-  - Texte : Rapport condensé pour consultation rapide
-  - JSON : Données structurées pour réutilisation programmatique  
-  - HTML : Interface interactive avec navigation
-
-### Capacités d'Analyse
-- Traitement progressif de gros fichiers XML (630K+ lignes)
-- Détection hiérarchique des relations entité-attribut
-- Mapping avec la documentation officielle SIA v6.0
-- Statistiques de couverture et conformité
-
-## Installation
-
-```bash
-# Cloner le repository
-git clone <repository-url>
-cd xml-sia
-
-# Créer un environnement virtuel
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# ou
-.venv\Scripts\activate     # Windows
-
-# Installer les dépendances (aucune dépendance externe requise)
-# Le projet utilise uniquement des modules Python standard
-```
-
-## Utilisation
-
-### Service d'Inventaire
-
-```bash
-# Rapport texte standard (par défaut)
-python inventory/sia_entity_inventory.py
-
-# Rapport JSON détaillé pour réutilisation
-python inventory/sia_entity_inventory.py --json
-
-# Rapport HTML interactif
-python inventory/sia_entity_inventory.py --html
-
-# Les deux formats détaillés
-python inventory/sia_entity_inventory.py --json --html
-```
-
-### Structure des Données
-
-Les rapports analysent :
-- **23 types d'entités** documentées SIA v6.0 (95.8% de couverture)
-- **299 attributs** classifiés automatiquement
-- **25 conteneurs** d'entités structurant les données
-- Statistiques de conformité et classification
-
-## Structure du Projet
+## 📁 Structure
 
 ```
 xml-sia/
-├── inventory/              # Services d'analyse
-│   └── sia_entity_inventory.py
-├── input/                  # Données d'entrée
-│   ├── *.xml              # Fichiers XML SIA (ignorés par Git)
-│   ├── *.md               # Documentation SIA
-│   └── *.pdf              # Documentation SIA
-├── output/                 # Rapports générés
-│   └── inventory/         # Rapports d'inventaire
-└── README.md              # Cette documentation
+├── tools/                         # Outils d'extraction et validation
+│   ├── extract_espace.py         # Outil d'extraction principal
+│   ├── check_coherence.py        # Validation XSD vs spécification
+│   └── README.md                  # Documentation des outils
+├── schemas/                       # Schémas XSD et validation
+│   ├── Espace.xsd                # Schéma XSD des espaces
+│   └── test_validation_xsd.xml   # Tests de validation
+├── data/                          # Données d'entrée et sorties
+│   ├── input/                    # Données sources SIA
+│   ├── output/                   # Extractions générées
+│   └── examples/                 # Exemples d'extraction
+├── docs/                          # Documentation et rapports
+│   ├── README_extract_espace.md  # Guide d'utilisation
+│   ├── COHERENCE_REPORT.md       # Rapport de validation
+│   └── RELATIONS_ANALYSIS_REPORT.md # Analyse des relations
+├── inventory/                     # Analyses d'inventaire
+└── README.md                      # Ce fichier
 ```
 
-## Documentation Technique
+## 🚀 Utilisation rapide
 
-### Entités SIA Supportées
+### Extraction d'un espace aérien
+```bash
+# Extraire la TMA Le Bourget avec toutes ses dépendances
+python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
 
-Le service reconnaît et analyse toutes les entités de la spécification SIA v6.0 :
-- Aérodromes (Ad), Pistes (Rwy), Hélistations
-- Espaces aériens (Espace), Volumes, Parties
-- Routes aériennes, Segments, Points d'appui (NavFix)
-- Obstacles, Phares, Aides radio (RadioNav)
-- Services de communication, Fréquences
-- Et bien d'autres...
+# Extraire une CTR par pk
+python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "1204" --verbose
+```
 
-### Formats de Sortie
+### Validation de cohérence
+```bash
+# Vérifier la cohérence XSD vs spécification SIA
+python tools/check_coherence.py
+```
 
-- **Texte** : Synthèse condensée avec statistiques principales
-- **JSON** : Structure complète avec métadonnées, entités détaillées, attributs exhaustifs
-- **HTML** : Interface web avec navigation, sections collapsibles, design responsive
+## 📊 Fonctionnalités principales
 
-## Contribution
+### 🎯 Extraction d'espaces aériens (`tools/extract_espace.py`)
+- **Extraction ciblée** par identifiant `lk` ou `pk`
+- **Résolution automatique** de toutes les dépendances
+- **Validation XSD** intégrée
+- **Formatage XML** optimisé (réduction 57% des lignes vides)
+- **Support complet** : TMA, CTR, espaces complexes
 
-Ce projet analyse les données aéronautiques officielles françaises selon la spécification SIA v6.0.
+### ✅ Validation de cohérence (`tools/check_coherence.py`)
+- **Analyse des relations** `relation(EntityName)` selon spécification SIA
+- **Validation XSD** contre documentation officielle
+- **Détection automatique** des incohérences
+- **Rapport détaillé** de conformité (21 entités analysées)
 
-## Licence
+### 📋 Schéma XSD (`schemas/Espace.xsd`)
+- **Conformité 100%** avec spécification SIA v6.0
+- **Relations complètes** entre entités aéronautiques
+- **Validation automatique** des extractions
+- **Documentation intégrée** des relations CTR ↔ Aérodrome
 
-Projet d'analyse de données publiques aéronautiques françaises.
+## 🛠️ Installation
+
+```bash
+# Prérequis : Python 3.7+
+git clone <repository-url>
+cd xml-sia
+
+# Aucune dépendance externe requise
+# Modules standard : xml.etree.ElementTree, xml.dom.minidom, argparse
+```
+
+## 📖 Documentation détaillée
+
+- **[Guide d'utilisation](docs/README_extract_espace.md)** : Instructions complètes d'extraction
+- **[Rapport de cohérence](docs/COHERENCE_REPORT.md)** : Validation XSD vs spécification
+- **[Analyse des relations](docs/RELATIONS_ANALYSIS_REPORT.md)** : Relations SIA détectées et validées
+
+## 🎯 Exemples d'extraction
+
+### TMA Le Bourget (Espace complexe)
+```bash
+python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
+```
+**Résultat** : 11 entités extraites (Territoire, Ad, Espace, 2 Parties, 2 Volumes, 3 Services, 2 Fréquences)
+
+### CTR Pontoise (Espace simple)
+```bash
+python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][CTR PONTOISE]"
+```
+**Résultat** : 11 entités extraites avec relations CTR ↔ Aérodrome
+
+## ✨ Points forts
+
+- **🎯 Extraction ciblée** : Extrait uniquement ce qui est nécessaire
+- **🔗 Dépendances complètes** : Résolution automatique de toutes les relations
+- **✅ Validation intégrée** : Conformité XSD automatique
+- **📊 Analyse de qualité** : Validation contre spécification officielle
+- **🚀 Performance** : Traitement rapide même sur gros fichiers XML-SIA
+- **📝 Documentation** : Couverture complète avec exemples
+
+---
+
+*Développé pour l'extraction et la validation des données XML-SIA v6.0 - Format officiel français d'échange d'informations aéronautiques*

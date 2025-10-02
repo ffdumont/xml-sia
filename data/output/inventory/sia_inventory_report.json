@@ -1,0 +1,1680 @@
+{
+  "metadata": {
+    "analysis_timestamp": "2025-10-01T22:22:00.247442",
+    "xml_file": "C:\\Users\\franc\\dev\\xml-sia\\input\\XML_SIA_2025-10-02.xml",
+    "file_size_mb": 26.01338768005371,
+    "lines_analyzed": 630787,
+    "xml_metadata": {
+      "export_date": "2025-08-07T17:46:29.372+02:00",
+      "origine": "Sia-France",
+      "version": "5",
+      "publication_date": "2025-08-21",
+      "effective_date": "2025-10-02"
+    }
+  },
+  "summary": {
+    "entities_documented_sia_v6": 24,
+    "entities_documented_found": 23,
+    "entities_documented_missing": 1,
+    "entities_undocumented_found": 0,
+    "coverage_percentage": 95.8,
+    "container_types": 25,
+    "classified_attributes": 299,
+    "unclassified_elements": 0,
+    "classification_rate": 100.0
+  },
+  "entities": {
+    "documented_found": {
+      "Ad": {
+        "count": 3874,
+        "name": "Aérodromes",
+        "description": "Aérodromes civils et militaires",
+        "attributes": [
+          "AdAd2",
+          "AdAdresse",
+          "AdAfs",
+          "AdCode",
+          "AdFax",
+          "AdGeoUnd",
+          "AdGestion",
+          "AdMagVar",
+          "AdNomCarto",
+          "AdNomComplet",
+          "AdRefAltFt",
+          "AdRefTemp",
+          "AdRem",
+          "AdSituation",
+          "AdStatut",
+          "AdTel",
+          "AdTelex",
+          "AireAclAltFt",
+          "AireAclLoc",
+          "AireRem",
+          "AireTfcResist",
+          "AireTfcRevet",
+          "ArpLat",
+          "ArpLong",
+          "ArpSituation",
+          "Cartes",
+          "Ctr",
+          "GuidAccost",
+          "GuidRem",
+          "GuidRwy",
+          "GuidStopBars",
+          "GuidTwy",
+          "HorAdminCode",
+          "HorAdminTxt",
+          "HorAtsCode",
+          "HorAtsTxt",
+          "HorAvtTxt",
+          "HorBdpTxt",
+          "HorBiaTxt",
+          "HorCustCode",
+          "HorCustTxt",
+          "HorDegivrageTxt",
+          "HorManutentionTxt",
+          "HorMetTxt",
+          "HorRem",
+          "HorSanTxt",
+          "HorSureteTxt",
+          "LgtAbn",
+          "LgtIbn",
+          "LgtLdi",
+          "LgtRem",
+          "LgtTwyAxial",
+          "LgtTwyLateral",
+          "LgtWdi",
+          "MagVarDate",
+          "MetAltnCentre",
+          "MetAts",
+          "MetBriefing",
+          "MetCartes",
+          "MetCentre",
+          "MetComplement",
+          "MetDoc",
+          "MetLangue",
+          "MetPreviAtt",
+          "MetPreviPeriode",
+          "MetRem",
+          "MetTafCentre",
+          "MetTafValidite",
+          "NeigeEqpt",
+          "NeigePriorite",
+          "NeigeRem",
+          "PkgId",
+          "SecoursAlim",
+          "SecoursDelai",
+          "SsliaAcft",
+          "SsliaCat",
+          "SsliaFac",
+          "SsliaRem",
+          "SvcEscaleDegivrage",
+          "SvcEscaleFret",
+          "SvcEscaleFuel",
+          "SvcEscaleFuelRem",
+          "SvcEscaleHangar",
+          "SvcEscaleRem",
+          "SvcEscaleReparation",
+          "SvcPaxBanque",
+          "SvcPaxHotel",
+          "SvcPaxRem",
+          "SvcPaxResto",
+          "SvcPaxSan",
+          "SvcPaxTourisme",
+          "SvcPaxTransport",
+          "TfcIfr",
+          "TfcIntl",
+          "TfcNonRegulier",
+          "TfcNtl",
+          "TfcPrive",
+          "TfcRegulier",
+          "TfcVfr",
+          "TwyLargeur",
+          "TwyResist",
+          "TwyRevet",
+          "Wgs84"
+        ],
+        "attribute_count": 103
+      },
+      "Territoire": {
+        "count": 23501,
+        "name": "Territoires",
+        "description": "Territoires où se situent les autres entités",
+        "attributes": [
+          "Nom"
+        ],
+        "attribute_count": 1
+      },
+      "Bordure": {
+        "count": 40,
+        "name": "Lignes d'appui d'espaces",
+        "description": "Lignes d'appui pour description de contours d'espaces (frontières, fleuves...)",
+        "attributes": [
+          "Code",
+          "Nom",
+          "Wgs84"
+        ],
+        "attribute_count": 3
+      },
+      "DmeIls": {
+        "count": 86,
+        "name": "DME d'atterrissage",
+        "description": "DME d'atterrissage associés aux ILS",
+        "attributes": [
+          "AltitudeFt",
+          "FlPorteeVert",
+          "Latitude",
+          "Longitude",
+          "Portee"
+        ],
+        "attribute_count": 5
+      },
+      "Ils": {
+        "count": 306,
+        "name": "Localizer des ILS",
+        "description": "Radiophares d'alignement de piste (localizer, LLZ) des ILS",
+        "attributes": [
+          "Ident",
+          "Qfu"
+        ],
+        "attribute_count": 2
+      },
+      "Espace": {
+        "count": 8570,
+        "name": "Espaces aériens",
+        "description": "Espaces aériens de toutes natures",
+        "attributes": [
+          "AdAssocie",
+          "AltrFt",
+          "Nom",
+          "TypeEspace"
+        ],
+        "attribute_count": 4
+      },
+      "Frequence": {
+        "count": 3796,
+        "name": "Fréquences des services",
+        "description": "Fréquences disponibles pour les services",
+        "attributes": [
+          "AltitudeFt",
+          "Couverture",
+          "Espacement",
+          "FlPorteeVert",
+          "HorCode",
+          "HorTxt",
+          "IlsCat",
+          "IlsGuidage",
+          "IlsSecurite",
+          "LatDme",
+          "Latitude",
+          "LongDme",
+          "Longitude",
+          "NomPhraseo",
+          "Portee",
+          "Remarque",
+          "SecteurSituation",
+          "Station",
+          "Suppletive",
+          "Usage"
+        ],
+        "attribute_count": 20
+      },
+      "Service": {
+        "count": 3382,
+        "name": "Services de communications",
+        "description": "Services aux vols supportés par communications sol/air",
+        "attributes": [
+          "IndicLieu",
+          "IndicService",
+          "Langue"
+        ],
+        "attribute_count": 3
+      },
+      "Gp": {
+        "count": 97,
+        "name": "Glide-path des ILS",
+        "description": "Radiophares d'alignement de descente (glide-path) des ILS",
+        "attributes": [
+          "AltitudeFt",
+          "Couverture",
+          "Latitude",
+          "Longitude",
+          "Pente",
+          "RdhM"
+        ],
+        "attribute_count": 6
+      },
+      "Helistation": {
+        "count": 276,
+        "name": "Hélistations",
+        "description": "Hélistations civiles et militaires",
+        "attributes": [
+          "AltitudeFt",
+          "Atlas",
+          "Balisage",
+          "ClassePerf",
+          "DimFato",
+          "DimTlof",
+          "EnTerrasse",
+          "Exploitant",
+          "HauteurFt",
+          "HelRef",
+          "HorTxt",
+          "Ifr",
+          "Latitude",
+          "Longitude",
+          "Nom",
+          "Nuit",
+          "Remarque",
+          "Resistance",
+          "Revetement",
+          "SousCat",
+          "Sslia",
+          "Statut",
+          "Wgs84",
+          "ZoneHabitee"
+        ],
+        "attribute_count": 24
+      },
+      "Rwy": {
+        "count": 2316,
+        "name": "Pistes",
+        "description": "Pistes de décollage/atterrissage des aérodromes",
+        "attributes": [
+          "AltFtDThr1",
+          "AltFtDThr2",
+          "AltFtThr1",
+          "AltFtThr2",
+          "BandeDim",
+          "Cwy1",
+          "Cwy2",
+          "Largeur",
+          "LatDThr1",
+          "LatDThr2",
+          "LatThr1",
+          "LatThr2",
+          "Lda1",
+          "Lda2",
+          "LongDThr1",
+          "LongDThr2",
+          "LongThr1",
+          "LongThr2",
+          "Longueur",
+          "OrientationGeo",
+          "Principale",
+          "RemDecDist1",
+          "RemDecDist2",
+          "Resistance",
+          "Revetement",
+          "RwyRem1",
+          "RwyRem2",
+          "Swy1",
+          "Swy2"
+        ],
+        "attribute_count": 29
+      },
+      "Mkr": {
+        "count": 46,
+        "name": "Radiobornes des ILS",
+        "description": "Radiobornes (OM, MM, IM) des ILS",
+        "attributes": [
+          "AltitudeFt",
+          "Latitude",
+          "Longitude"
+        ],
+        "attribute_count": 3
+      },
+      "NavFix": {
+        "count": 4709,
+        "name": "Points d'appui réseau de routes",
+        "description": "Points d'appui du réseau de routes (aides radio comprises)",
+        "attributes": [
+          "Description",
+          "Ident",
+          "Latitude",
+          "Longitude",
+          "NavType",
+          "Wgs84"
+        ],
+        "attribute_count": 6
+      },
+      "Obstacle": {
+        "count": 13557,
+        "name": "Obstacles",
+        "description": "Obstacles à la navigation aérienne",
+        "attributes": [
+          "AglFt",
+          "AmslFt",
+          "Balisage",
+          "Combien",
+          "Latitude",
+          "Longitude",
+          "NumeroNom",
+          "Remarque",
+          "TypeObst",
+          "Wgs84"
+        ],
+        "attribute_count": 10
+      },
+      "Partie": {
+        "count": 8982,
+        "name": "Parties d'espaces aériens",
+        "description": "Parties d'espaces aériens",
+        "attributes": [
+          "Contour",
+          "NomPartie",
+          "NomUsuel",
+          "NumeroPartie"
+        ],
+        "attribute_count": 4
+      },
+      "Phare": {
+        "count": 79,
+        "name": "Phares marins et feux aéronautiques",
+        "description": "Phares marins et feux aéronautiques",
+        "attributes": [
+          "HorCode",
+          "HorTxt",
+          "Intensite",
+          "Latitude",
+          "Longitude",
+          "NumeroNom",
+          "Remarque",
+          "Signal",
+          "Type",
+          "Wgs84"
+        ],
+        "attribute_count": 10
+      },
+      "RadioNav": {
+        "count": 226,
+        "name": "Aides radio",
+        "description": "Aides radio (VOR, NDB, TACAN...)",
+        "attributes": [],
+        "attribute_count": 0
+      },
+      "Route": {
+        "count": 2306,
+        "name": "Routes aériennes",
+        "description": "Routes aériennes (airways)",
+        "attributes": [
+          "Numero",
+          "Origine",
+          "OrigineTxt",
+          "Prefixe",
+          "Remarque",
+          "RouteType",
+          "TypeCompteRendu"
+        ],
+        "attribute_count": 7
+      },
+      "RwyLgt": {
+        "count": 388,
+        "name": "Balisage lumineux pistes",
+        "description": "Balisage lumineux des pistes",
+        "attributes": [
+          "LgtApchCat",
+          "LgtApchIntensite",
+          "LgtApchLongueur",
+          "LgtAxeCouleur",
+          "LgtAxeEspace",
+          "LgtAxeIntensite",
+          "LgtAxeLongueur",
+          "LgtBordCouleur",
+          "LgtBordEspace",
+          "LgtBordIntensite",
+          "LgtBordLongueur",
+          "LgtFinCouleur",
+          "LgtRem",
+          "LgtSwyCouleur",
+          "LgtSwyLongueur",
+          "LgtTdzLongueur",
+          "LgtThrCouleur",
+          "MehtFt",
+          "PapiVasis",
+          "PapiVasisPente",
+          "Qfu"
+        ],
+        "attribute_count": 21
+      },
+      "Segment": {
+        "count": 1800,
+        "name": "Segments de routes",
+        "description": "Caractéristiques d'une route entre deux points consécutifs",
+        "attributes": [
+          "Acc",
+          "Circulation",
+          "CodeRnp",
+          "CodeSegmentType",
+          "CompteRendu",
+          "Distance",
+          "ExtremiteTxt",
+          "Moca",
+          "NavFixExtremite",
+          "NavFixOrigine",
+          "Plafond",
+          "PlafondRefUnite",
+          "Plancher",
+          "PlancherRefUnite",
+          "Remarque",
+          "RouteMag",
+          "Sequence"
+        ],
+        "attribute_count": 17
+      },
+      "TwyDecDist": {
+        "count": 272,
+        "name": "Réductions distance décollage",
+        "description": "Réductions de distance décollage",
+        "attributes": [
+          "Qfu",
+          "ReducTkofDist",
+          "Twy"
+        ],
+        "attribute_count": 3
+      },
+      "Volume": {
+        "count": 4540,
+        "name": "Volumes d'espaces aériens",
+        "description": "Caractéristiques du découpage vertical des espaces aériens",
+        "attributes": [
+          "Activite",
+          "Classe",
+          "HorCode",
+          "HorTxt",
+          "Plafond",
+          "Plafond2",
+          "PlafondRefUnite",
+          "Plancher",
+          "Plancher2",
+          "PlancherRefUnite",
+          "Remarque",
+          "Rtba",
+          "Sequence"
+        ],
+        "attribute_count": 13
+      },
+      "VorInsChk": {
+        "count": 1556,
+        "name": "Points vérification VOR-INS",
+        "description": "Points de vérification VOR-INS sur les aérodromes",
+        "attributes": [
+          "Ident",
+          "Latitude",
+          "Longitude",
+          "VorIns",
+          "Wgs84"
+        ],
+        "attribute_count": 5
+      }
+    },
+    "documented_missing": {
+      "Cdr": {
+        "name": "Restrictions segments de route",
+        "description": "Restrictions d'utilisation des segments de route"
+      }
+    },
+    "undocumented_found": {}
+  },
+  "attributes": {
+    "by_entity": {
+      "Ad": [
+        "AdAd2",
+        "AdAdresse",
+        "AdAfs",
+        "AdCode",
+        "AdFax",
+        "AdGeoUnd",
+        "AdGestion",
+        "AdMagVar",
+        "AdNomCarto",
+        "AdNomComplet",
+        "AdRefAltFt",
+        "AdRefTemp",
+        "AdRem",
+        "AdSituation",
+        "AdStatut",
+        "AdTel",
+        "AdTelex",
+        "AireAclAltFt",
+        "AireAclLoc",
+        "AireRem",
+        "AireTfcResist",
+        "AireTfcRevet",
+        "ArpLat",
+        "ArpLong",
+        "ArpSituation",
+        "Cartes",
+        "Ctr",
+        "GuidAccost",
+        "GuidRem",
+        "GuidRwy",
+        "GuidStopBars",
+        "GuidTwy",
+        "HorAdminCode",
+        "HorAdminTxt",
+        "HorAtsCode",
+        "HorAtsTxt",
+        "HorAvtTxt",
+        "HorBdpTxt",
+        "HorBiaTxt",
+        "HorCustCode",
+        "HorCustTxt",
+        "HorDegivrageTxt",
+        "HorManutentionTxt",
+        "HorMetTxt",
+        "HorRem",
+        "HorSanTxt",
+        "HorSureteTxt",
+        "LgtAbn",
+        "LgtIbn",
+        "LgtLdi",
+        "LgtRem",
+        "LgtTwyAxial",
+        "LgtTwyLateral",
+        "LgtWdi",
+        "MagVarDate",
+        "MetAltnCentre",
+        "MetAts",
+        "MetBriefing",
+        "MetCartes",
+        "MetCentre",
+        "MetComplement",
+        "MetDoc",
+        "MetLangue",
+        "MetPreviAtt",
+        "MetPreviPeriode",
+        "MetRem",
+        "MetTafCentre",
+        "MetTafValidite",
+        "NeigeEqpt",
+        "NeigePriorite",
+        "NeigeRem",
+        "PkgId",
+        "SecoursAlim",
+        "SecoursDelai",
+        "SsliaAcft",
+        "SsliaCat",
+        "SsliaFac",
+        "SsliaRem",
+        "SvcEscaleDegivrage",
+        "SvcEscaleFret",
+        "SvcEscaleFuel",
+        "SvcEscaleFuelRem",
+        "SvcEscaleHangar",
+        "SvcEscaleRem",
+        "SvcEscaleReparation",
+        "SvcPaxBanque",
+        "SvcPaxHotel",
+        "SvcPaxRem",
+        "SvcPaxResto",
+        "SvcPaxSan",
+        "SvcPaxTourisme",
+        "SvcPaxTransport",
+        "TfcIfr",
+        "TfcIntl",
+        "TfcNonRegulier",
+        "TfcNtl",
+        "TfcPrive",
+        "TfcRegulier",
+        "TfcVfr",
+        "TwyLargeur",
+        "TwyResist",
+        "TwyRevet",
+        "Wgs84"
+      ],
+      "Bordure": [
+        "Code",
+        "Nom",
+        "Wgs84"
+      ],
+      "DmeIls": [
+        "AltitudeFt",
+        "FlPorteeVert",
+        "Latitude",
+        "Longitude",
+        "Portee"
+      ],
+      "Espace": [
+        "AdAssocie",
+        "AltrFt",
+        "Nom",
+        "TypeEspace"
+      ],
+      "Frequence": [
+        "AltitudeFt",
+        "Couverture",
+        "Espacement",
+        "FlPorteeVert",
+        "HorCode",
+        "HorTxt",
+        "IlsCat",
+        "IlsGuidage",
+        "IlsSecurite",
+        "LatDme",
+        "Latitude",
+        "LongDme",
+        "Longitude",
+        "NomPhraseo",
+        "Portee",
+        "Remarque",
+        "SecteurSituation",
+        "Station",
+        "Suppletive",
+        "Usage"
+      ],
+      "Gp": [
+        "AltitudeFt",
+        "Couverture",
+        "Latitude",
+        "Longitude",
+        "Pente",
+        "RdhM"
+      ],
+      "Helistation": [
+        "AltitudeFt",
+        "Atlas",
+        "Balisage",
+        "ClassePerf",
+        "DimFato",
+        "DimTlof",
+        "EnTerrasse",
+        "Exploitant",
+        "HauteurFt",
+        "HelRef",
+        "HorTxt",
+        "Ifr",
+        "Latitude",
+        "Longitude",
+        "Nom",
+        "Nuit",
+        "Remarque",
+        "Resistance",
+        "Revetement",
+        "SousCat",
+        "Sslia",
+        "Statut",
+        "Wgs84",
+        "ZoneHabitee"
+      ],
+      "Ils": [
+        "Ident",
+        "Qfu"
+      ],
+      "Mkr": [
+        "AltitudeFt",
+        "Latitude",
+        "Longitude"
+      ],
+      "NavFix": [
+        "Description",
+        "Ident",
+        "Latitude",
+        "Longitude",
+        "NavType",
+        "Wgs84"
+      ],
+      "Obstacle": [
+        "AglFt",
+        "AmslFt",
+        "Balisage",
+        "Combien",
+        "Latitude",
+        "Longitude",
+        "NumeroNom",
+        "Remarque",
+        "TypeObst",
+        "Wgs84"
+      ],
+      "Partie": [
+        "Contour",
+        "NomPartie",
+        "NomUsuel",
+        "NumeroPartie"
+      ],
+      "Phare": [
+        "HorCode",
+        "HorTxt",
+        "Intensite",
+        "Latitude",
+        "Longitude",
+        "NumeroNom",
+        "Remarque",
+        "Signal",
+        "Type",
+        "Wgs84"
+      ],
+      "Route": [
+        "Numero",
+        "Origine",
+        "OrigineTxt",
+        "Prefixe",
+        "Remarque",
+        "RouteType",
+        "TypeCompteRendu"
+      ],
+      "Rwy": [
+        "AltFtDThr1",
+        "AltFtDThr2",
+        "AltFtThr1",
+        "AltFtThr2",
+        "BandeDim",
+        "Cwy1",
+        "Cwy2",
+        "Largeur",
+        "LatDThr1",
+        "LatDThr2",
+        "LatThr1",
+        "LatThr2",
+        "Lda1",
+        "Lda2",
+        "LongDThr1",
+        "LongDThr2",
+        "LongThr1",
+        "LongThr2",
+        "Longueur",
+        "OrientationGeo",
+        "Principale",
+        "RemDecDist1",
+        "RemDecDist2",
+        "Resistance",
+        "Revetement",
+        "RwyRem1",
+        "RwyRem2",
+        "Swy1",
+        "Swy2"
+      ],
+      "RwyLgt": [
+        "LgtApchCat",
+        "LgtApchIntensite",
+        "LgtApchLongueur",
+        "LgtAxeCouleur",
+        "LgtAxeEspace",
+        "LgtAxeIntensite",
+        "LgtAxeLongueur",
+        "LgtBordCouleur",
+        "LgtBordEspace",
+        "LgtBordIntensite",
+        "LgtBordLongueur",
+        "LgtFinCouleur",
+        "LgtRem",
+        "LgtSwyCouleur",
+        "LgtSwyLongueur",
+        "LgtTdzLongueur",
+        "LgtThrCouleur",
+        "MehtFt",
+        "PapiVasis",
+        "PapiVasisPente",
+        "Qfu"
+      ],
+      "Segment": [
+        "Acc",
+        "Circulation",
+        "CodeRnp",
+        "CodeSegmentType",
+        "CompteRendu",
+        "Distance",
+        "ExtremiteTxt",
+        "Moca",
+        "NavFixExtremite",
+        "NavFixOrigine",
+        "Plafond",
+        "PlafondRefUnite",
+        "Plancher",
+        "PlancherRefUnite",
+        "Remarque",
+        "RouteMag",
+        "Sequence"
+      ],
+      "Service": [
+        "IndicLieu",
+        "IndicService",
+        "Langue"
+      ],
+      "Territoire": [
+        "Nom"
+      ],
+      "TwyDecDist": [
+        "Qfu",
+        "ReducTkofDist",
+        "Twy"
+      ],
+      "Volume": [
+        "Activite",
+        "Classe",
+        "HorCode",
+        "HorTxt",
+        "Plafond",
+        "Plafond2",
+        "PlafondRefUnite",
+        "Plancher",
+        "Plancher2",
+        "PlancherRefUnite",
+        "Remarque",
+        "Rtba",
+        "Sequence"
+      ],
+      "VorInsChk": [
+        "Ident",
+        "Latitude",
+        "Longitude",
+        "VorIns",
+        "Wgs84"
+      ]
+    },
+    "total_count": 299,
+    "detailed_list": {
+      "AdAd2": [
+        "Ad"
+      ],
+      "AdAdresse": [
+        "Ad"
+      ],
+      "AdAfs": [
+        "Ad"
+      ],
+      "AdCode": [
+        "Ad"
+      ],
+      "AdFax": [
+        "Ad"
+      ],
+      "AdGeoUnd": [
+        "Ad"
+      ],
+      "AdGestion": [
+        "Ad"
+      ],
+      "AdMagVar": [
+        "Ad"
+      ],
+      "AdNomCarto": [
+        "Ad"
+      ],
+      "AdNomComplet": [
+        "Ad"
+      ],
+      "AdRefAltFt": [
+        "Ad"
+      ],
+      "AdRefTemp": [
+        "Ad"
+      ],
+      "AdRem": [
+        "Ad"
+      ],
+      "AdSituation": [
+        "Ad"
+      ],
+      "AdStatut": [
+        "Ad"
+      ],
+      "AdTel": [
+        "Ad"
+      ],
+      "AdTelex": [
+        "Ad"
+      ],
+      "AireAclAltFt": [
+        "Ad"
+      ],
+      "AireAclLoc": [
+        "Ad"
+      ],
+      "AireRem": [
+        "Ad"
+      ],
+      "AireTfcResist": [
+        "Ad"
+      ],
+      "AireTfcRevet": [
+        "Ad"
+      ],
+      "ArpLat": [
+        "Ad"
+      ],
+      "ArpLong": [
+        "Ad"
+      ],
+      "ArpSituation": [
+        "Ad"
+      ],
+      "Cartes": [
+        "Ad"
+      ],
+      "Ctr": [
+        "Ad"
+      ],
+      "GuidAccost": [
+        "Ad"
+      ],
+      "GuidRem": [
+        "Ad"
+      ],
+      "GuidRwy": [
+        "Ad"
+      ],
+      "GuidStopBars": [
+        "Ad"
+      ],
+      "GuidTwy": [
+        "Ad"
+      ],
+      "HorAdminCode": [
+        "Ad"
+      ],
+      "HorAdminTxt": [
+        "Ad"
+      ],
+      "HorAtsCode": [
+        "Ad"
+      ],
+      "HorAtsTxt": [
+        "Ad"
+      ],
+      "HorAvtTxt": [
+        "Ad"
+      ],
+      "HorBdpTxt": [
+        "Ad"
+      ],
+      "HorBiaTxt": [
+        "Ad"
+      ],
+      "HorCustCode": [
+        "Ad"
+      ],
+      "HorCustTxt": [
+        "Ad"
+      ],
+      "HorDegivrageTxt": [
+        "Ad"
+      ],
+      "HorManutentionTxt": [
+        "Ad"
+      ],
+      "HorMetTxt": [
+        "Ad"
+      ],
+      "HorRem": [
+        "Ad"
+      ],
+      "HorSanTxt": [
+        "Ad"
+      ],
+      "HorSureteTxt": [
+        "Ad"
+      ],
+      "LgtAbn": [
+        "Ad"
+      ],
+      "LgtIbn": [
+        "Ad"
+      ],
+      "LgtLdi": [
+        "Ad"
+      ],
+      "LgtRem": [
+        "Ad",
+        "RwyLgt"
+      ],
+      "LgtTwyAxial": [
+        "Ad"
+      ],
+      "LgtTwyLateral": [
+        "Ad"
+      ],
+      "LgtWdi": [
+        "Ad"
+      ],
+      "MagVarDate": [
+        "Ad"
+      ],
+      "MetAltnCentre": [
+        "Ad"
+      ],
+      "MetAts": [
+        "Ad"
+      ],
+      "MetBriefing": [
+        "Ad"
+      ],
+      "MetCartes": [
+        "Ad"
+      ],
+      "MetCentre": [
+        "Ad"
+      ],
+      "MetComplement": [
+        "Ad"
+      ],
+      "MetDoc": [
+        "Ad"
+      ],
+      "MetLangue": [
+        "Ad"
+      ],
+      "MetPreviAtt": [
+        "Ad"
+      ],
+      "MetPreviPeriode": [
+        "Ad"
+      ],
+      "MetRem": [
+        "Ad"
+      ],
+      "MetTafCentre": [
+        "Ad"
+      ],
+      "MetTafValidite": [
+        "Ad"
+      ],
+      "NeigeEqpt": [
+        "Ad"
+      ],
+      "NeigePriorite": [
+        "Ad"
+      ],
+      "NeigeRem": [
+        "Ad"
+      ],
+      "PkgId": [
+        "Ad"
+      ],
+      "SecoursAlim": [
+        "Ad"
+      ],
+      "SecoursDelai": [
+        "Ad"
+      ],
+      "SsliaAcft": [
+        "Ad"
+      ],
+      "SsliaCat": [
+        "Ad"
+      ],
+      "SsliaFac": [
+        "Ad"
+      ],
+      "SsliaRem": [
+        "Ad"
+      ],
+      "SvcEscaleDegivrage": [
+        "Ad"
+      ],
+      "SvcEscaleFret": [
+        "Ad"
+      ],
+      "SvcEscaleFuel": [
+        "Ad"
+      ],
+      "SvcEscaleFuelRem": [
+        "Ad"
+      ],
+      "SvcEscaleHangar": [
+        "Ad"
+      ],
+      "SvcEscaleRem": [
+        "Ad"
+      ],
+      "SvcEscaleReparation": [
+        "Ad"
+      ],
+      "SvcPaxBanque": [
+        "Ad"
+      ],
+      "SvcPaxHotel": [
+        "Ad"
+      ],
+      "SvcPaxRem": [
+        "Ad"
+      ],
+      "SvcPaxResto": [
+        "Ad"
+      ],
+      "SvcPaxSan": [
+        "Ad"
+      ],
+      "SvcPaxTourisme": [
+        "Ad"
+      ],
+      "SvcPaxTransport": [
+        "Ad"
+      ],
+      "TfcIfr": [
+        "Ad"
+      ],
+      "TfcIntl": [
+        "Ad"
+      ],
+      "TfcNonRegulier": [
+        "Ad"
+      ],
+      "TfcNtl": [
+        "Ad"
+      ],
+      "TfcPrive": [
+        "Ad"
+      ],
+      "TfcRegulier": [
+        "Ad"
+      ],
+      "TfcVfr": [
+        "Ad"
+      ],
+      "TwyLargeur": [
+        "Ad"
+      ],
+      "TwyResist": [
+        "Ad"
+      ],
+      "TwyRevet": [
+        "Ad"
+      ],
+      "Wgs84": [
+        "Ad",
+        "Bordure",
+        "Helistation",
+        "NavFix",
+        "Obstacle",
+        "Phare",
+        "VorInsChk"
+      ],
+      "Code": [
+        "Bordure"
+      ],
+      "Nom": [
+        "Bordure",
+        "Espace",
+        "Helistation",
+        "Territoire"
+      ],
+      "AltitudeFt": [
+        "DmeIls",
+        "Frequence",
+        "Gp",
+        "Helistation",
+        "Mkr"
+      ],
+      "FlPorteeVert": [
+        "DmeIls",
+        "Frequence"
+      ],
+      "Latitude": [
+        "DmeIls",
+        "Frequence",
+        "Gp",
+        "Helistation",
+        "Mkr",
+        "NavFix",
+        "Obstacle",
+        "Phare",
+        "VorInsChk"
+      ],
+      "Longitude": [
+        "DmeIls",
+        "Frequence",
+        "Gp",
+        "Helistation",
+        "Mkr",
+        "NavFix",
+        "Obstacle",
+        "Phare",
+        "VorInsChk"
+      ],
+      "Portee": [
+        "DmeIls",
+        "Frequence"
+      ],
+      "AdAssocie": [
+        "Espace"
+      ],
+      "AltrFt": [
+        "Espace"
+      ],
+      "TypeEspace": [
+        "Espace"
+      ],
+      "Couverture": [
+        "Frequence",
+        "Gp"
+      ],
+      "Espacement": [
+        "Frequence"
+      ],
+      "HorCode": [
+        "Frequence",
+        "Phare",
+        "Volume"
+      ],
+      "HorTxt": [
+        "Frequence",
+        "Helistation",
+        "Phare",
+        "Volume"
+      ],
+      "IlsCat": [
+        "Frequence"
+      ],
+      "IlsGuidage": [
+        "Frequence"
+      ],
+      "IlsSecurite": [
+        "Frequence"
+      ],
+      "LatDme": [
+        "Frequence"
+      ],
+      "LongDme": [
+        "Frequence"
+      ],
+      "NomPhraseo": [
+        "Frequence"
+      ],
+      "Remarque": [
+        "Frequence",
+        "Helistation",
+        "Obstacle",
+        "Phare",
+        "Route",
+        "Segment",
+        "Volume"
+      ],
+      "SecteurSituation": [
+        "Frequence"
+      ],
+      "Station": [
+        "Frequence"
+      ],
+      "Suppletive": [
+        "Frequence"
+      ],
+      "Usage": [
+        "Frequence"
+      ],
+      "Pente": [
+        "Gp"
+      ],
+      "RdhM": [
+        "Gp"
+      ],
+      "Atlas": [
+        "Helistation"
+      ],
+      "Balisage": [
+        "Helistation",
+        "Obstacle"
+      ],
+      "ClassePerf": [
+        "Helistation"
+      ],
+      "DimFato": [
+        "Helistation"
+      ],
+      "DimTlof": [
+        "Helistation"
+      ],
+      "EnTerrasse": [
+        "Helistation"
+      ],
+      "Exploitant": [
+        "Helistation"
+      ],
+      "HauteurFt": [
+        "Helistation"
+      ],
+      "HelRef": [
+        "Helistation"
+      ],
+      "Ifr": [
+        "Helistation"
+      ],
+      "Nuit": [
+        "Helistation"
+      ],
+      "Resistance": [
+        "Helistation",
+        "Rwy"
+      ],
+      "Revetement": [
+        "Helistation",
+        "Rwy"
+      ],
+      "SousCat": [
+        "Helistation"
+      ],
+      "Sslia": [
+        "Helistation"
+      ],
+      "Statut": [
+        "Helistation"
+      ],
+      "ZoneHabitee": [
+        "Helistation"
+      ],
+      "Ident": [
+        "Ils",
+        "NavFix",
+        "VorInsChk"
+      ],
+      "Qfu": [
+        "Ils",
+        "RwyLgt",
+        "TwyDecDist"
+      ],
+      "Description": [
+        "NavFix"
+      ],
+      "NavType": [
+        "NavFix"
+      ],
+      "AglFt": [
+        "Obstacle"
+      ],
+      "AmslFt": [
+        "Obstacle"
+      ],
+      "Combien": [
+        "Obstacle"
+      ],
+      "NumeroNom": [
+        "Obstacle",
+        "Phare"
+      ],
+      "TypeObst": [
+        "Obstacle"
+      ],
+      "Contour": [
+        "Partie"
+      ],
+      "NomPartie": [
+        "Partie"
+      ],
+      "NomUsuel": [
+        "Partie"
+      ],
+      "NumeroPartie": [
+        "Partie"
+      ],
+      "Intensite": [
+        "Phare"
+      ],
+      "Signal": [
+        "Phare"
+      ],
+      "Type": [
+        "Phare"
+      ],
+      "Numero": [
+        "Route"
+      ],
+      "Origine": [
+        "Route"
+      ],
+      "OrigineTxt": [
+        "Route"
+      ],
+      "Prefixe": [
+        "Route"
+      ],
+      "RouteType": [
+        "Route"
+      ],
+      "TypeCompteRendu": [
+        "Route"
+      ],
+      "AltFtDThr1": [
+        "Rwy"
+      ],
+      "AltFtDThr2": [
+        "Rwy"
+      ],
+      "AltFtThr1": [
+        "Rwy"
+      ],
+      "AltFtThr2": [
+        "Rwy"
+      ],
+      "BandeDim": [
+        "Rwy"
+      ],
+      "Cwy1": [
+        "Rwy"
+      ],
+      "Cwy2": [
+        "Rwy"
+      ],
+      "Largeur": [
+        "Rwy"
+      ],
+      "LatDThr1": [
+        "Rwy"
+      ],
+      "LatDThr2": [
+        "Rwy"
+      ],
+      "LatThr1": [
+        "Rwy"
+      ],
+      "LatThr2": [
+        "Rwy"
+      ],
+      "Lda1": [
+        "Rwy"
+      ],
+      "Lda2": [
+        "Rwy"
+      ],
+      "LongDThr1": [
+        "Rwy"
+      ],
+      "LongDThr2": [
+        "Rwy"
+      ],
+      "LongThr1": [
+        "Rwy"
+      ],
+      "LongThr2": [
+        "Rwy"
+      ],
+      "Longueur": [
+        "Rwy"
+      ],
+      "OrientationGeo": [
+        "Rwy"
+      ],
+      "Principale": [
+        "Rwy"
+      ],
+      "RemDecDist1": [
+        "Rwy"
+      ],
+      "RemDecDist2": [
+        "Rwy"
+      ],
+      "RwyRem1": [
+        "Rwy"
+      ],
+      "RwyRem2": [
+        "Rwy"
+      ],
+      "Swy1": [
+        "Rwy"
+      ],
+      "Swy2": [
+        "Rwy"
+      ],
+      "LgtApchCat": [
+        "RwyLgt"
+      ],
+      "LgtApchIntensite": [
+        "RwyLgt"
+      ],
+      "LgtApchLongueur": [
+        "RwyLgt"
+      ],
+      "LgtAxeCouleur": [
+        "RwyLgt"
+      ],
+      "LgtAxeEspace": [
+        "RwyLgt"
+      ],
+      "LgtAxeIntensite": [
+        "RwyLgt"
+      ],
+      "LgtAxeLongueur": [
+        "RwyLgt"
+      ],
+      "LgtBordCouleur": [
+        "RwyLgt"
+      ],
+      "LgtBordEspace": [
+        "RwyLgt"
+      ],
+      "LgtBordIntensite": [
+        "RwyLgt"
+      ],
+      "LgtBordLongueur": [
+        "RwyLgt"
+      ],
+      "LgtFinCouleur": [
+        "RwyLgt"
+      ],
+      "LgtSwyCouleur": [
+        "RwyLgt"
+      ],
+      "LgtSwyLongueur": [
+        "RwyLgt"
+      ],
+      "LgtTdzLongueur": [
+        "RwyLgt"
+      ],
+      "LgtThrCouleur": [
+        "RwyLgt"
+      ],
+      "MehtFt": [
+        "RwyLgt"
+      ],
+      "PapiVasis": [
+        "RwyLgt"
+      ],
+      "PapiVasisPente": [
+        "RwyLgt"
+      ],
+      "Acc": [
+        "Segment"
+      ],
+      "Circulation": [
+        "Segment"
+      ],
+      "CodeRnp": [
+        "Segment"
+      ],
+      "CodeSegmentType": [
+        "Segment"
+      ],
+      "CompteRendu": [
+        "Segment"
+      ],
+      "Distance": [
+        "Segment"
+      ],
+      "ExtremiteTxt": [
+        "Segment"
+      ],
+      "Moca": [
+        "Segment"
+      ],
+      "NavFixExtremite": [
+        "Segment"
+      ],
+      "NavFixOrigine": [
+        "Segment"
+      ],
+      "Plafond": [
+        "Segment",
+        "Volume"
+      ],
+      "PlafondRefUnite": [
+        "Segment",
+        "Volume"
+      ],
+      "Plancher": [
+        "Segment",
+        "Volume"
+      ],
+      "PlancherRefUnite": [
+        "Segment",
+        "Volume"
+      ],
+      "RouteMag": [
+        "Segment"
+      ],
+      "Sequence": [
+        "Segment",
+        "Volume"
+      ],
+      "IndicLieu": [
+        "Service"
+      ],
+      "IndicService": [
+        "Service"
+      ],
+      "Langue": [
+        "Service"
+      ],
+      "ReducTkofDist": [
+        "TwyDecDist"
+      ],
+      "Twy": [
+        "TwyDecDist"
+      ],
+      "Activite": [
+        "Volume"
+      ],
+      "Classe": [
+        "Volume"
+      ],
+      "Plafond2": [
+        "Volume"
+      ],
+      "Plancher2": [
+        "Volume"
+      ],
+      "Rtba": [
+        "Volume"
+      ],
+      "VorIns": [
+        "VorInsChk"
+      ]
+    }
+  },
+  "containers": {
+    "AdS": 1,
+    "BordureS": 1,
+    "CdrS": 1,
+    "DmeIlsS": 1,
+    "EspaceS": 1,
+    "FrequenceS": 1,
+    "GpS": 1,
+    "HelistationS": 1,
+    "IlsS": 1,
+    "MkrS": 1,
+    "NavFixS": 1,
+    "ObstacleS": 1,
+    "PartieS": 1,
+    "PhareS": 1,
+    "RadioNavS": 1,
+    "RouteS": 1,
+    "RwyS": 1,
+    "RwyLgtS": 1,
+    "SegmentS": 1,
+    "ServiceS": 1,
+    "TerritoireS": 1,
+    "TwyDecDistS": 1,
+    "VolumeS": 1,
+    "VorInsChkS": 1,
+    "XtensionS": 1
+  },
+  "unclassified_elements": []
+}

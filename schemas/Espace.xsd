@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           targetNamespace="http://www.sia.aviation-civile.gouv.fr/siaexport"
+           xmlns:sia="http://www.sia.aviation-civile.gouv.fr/siaexport"
+           elementFormDefault="qualified">
+
+  <!-- ============================================ -->
+  <!-- Schéma XSD pour l'entité Espace XML-SIA v6.0 -->
+  <!-- ============================================ -->
+  <xs:annotation>
+    <xs:documentation>
+      Schéma XSD pour l'entité Espace du modèle XML-SIA v6.0
+      Service de l'Information Aéronautique (SIA)
+      Date: 28 décembre 2022
+      Version: SiaExport V6.0
+      
+      Cette définition couvre l'entité Espace (Espaces aériens) et ses dépendances
+      selon la spécification du document de modèle de données XML-SIA.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ============================================ -->
+  <!-- Élément racine SiaExport                      -->
+  <!-- ============================================ -->
+  
+  <xs:element name="SiaExport">
+    <xs:annotation>
+      <xs:documentation>
+        Élément racine pour l'export XML-SIA contenant les espaces aériens et leurs dépendances
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TerritoireS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Territoire" type="sia:Territoire" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="AdS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Ad" type="sia:Ad" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="EspaceS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Espace" type="sia:Espace" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="PartieS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Partie" type="sia:Partie" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="VolumeS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Volume" type="sia:Volume" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ServiceS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Service" type="sia:Service" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="FrequenceS" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Frequence" type="sia:Frequence" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================ -->
+  <!-- Énumérations (domaines énumérés §7)          -->
+  <!-- ============================================ -->
+  
+  <xs:simpleType name="TypeEspace">
+    <xs:restriction base="xs:string">
+      <!-- Espaces de contrôle -->
+      <xs:enumeration value="ACC"/>
+      <xs:enumeration value="CTA"/>
+      <xs:enumeration value="CTL"/>
+      <xs:enumeration value="CTR"/>
+      <xs:enumeration value="LTA"/>
+      <xs:enumeration value="OCA"/>
+      <xs:enumeration value="S/CTA"/>
+      <xs:enumeration value="S/CTR"/>
+      <xs:enumeration value="TMA"/>
+      <xs:enumeration value="UAC"/>
+      <xs:enumeration value="UTA"/>
+      <!-- Espaces d'information -->
+      <xs:enumeration value="FIR"/>
+      <xs:enumeration value="SIV"/>
+      <xs:enumeration value="UIR"/>
+      <!-- Activités de loisirs -->
+      <xs:enumeration value="Aer"/>
+      <xs:enumeration value="Bal"/>
+      <xs:enumeration value="Pje"/>
+      <xs:enumeration value="Tr Pla"/>
+      <xs:enumeration value="Tr VL"/>
+      <xs:enumeration value="Tr PVL"/>
+      <xs:enumeration value="Vol"/>
+      <!-- Zones spéciales -->
+      <xs:enumeration value="CBA"/>
+      <xs:enumeration value="D"/>
+      <xs:enumeration value="P"/>
+      <xs:enumeration value="ZIT"/>
+      <xs:enumeration value="R"/>
+      <xs:enumeration value="ZRT"/>
+      <xs:enumeration value="PRN"/>
+      <xs:enumeration value="SUR"/>
+      <xs:enumeration value="NAV"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="AltiCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FL"/>
+      <xs:enumeration value="ft AMSL"/>
+      <xs:enumeration value="ft ASFC"/>
+      <xs:enumeration value="SFC"/>
+      <xs:enumeration value="UNL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Classe">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="B"/>
+      <xs:enumeration value="C"/>
+      <xs:enumeration value="D"/>
+      <xs:enumeration value="E"/>
+      <xs:enumeration value="F"/>
+      <xs:enumeration value="G"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Hor">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="H24"/>
+      <xs:enumeration value="HJ"/>
+      <xs:enumeration value="HJ+"/>
+      <xs:enumeration value="HN"/>
+      <xs:enumeration value="HO"/>
+      <xs:enumeration value="HX"/>
+      <xs:enumeration value="WE"/>
+      <xs:enumeration value="WE+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Langue">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="en"/>
+      <xs:enumeration value="fr"/>
+      <xs:enumeration value="fr-en"/>
+      <xs:enumeration value="fr--en--de"/>
+      <xs:enumeration value="fr--en--it"/>
+      <xs:enumeration value="fr--en--sp"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SvcAts">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A/A"/>
+      <xs:enumeration value="ACC"/>
+      <xs:enumeration value="AFIS"/>
+      <xs:enumeration value="APP"/>
+      <xs:enumeration value="ATIS"/>
+      <xs:enumeration value="ATIS/S"/>
+      <xs:enumeration value="ATIS/V"/>
+      <xs:enumeration value="CCM"/>
+      <xs:enumeration value="CEV"/>
+      <xs:enumeration value="D-ATIS"/>
+      <xs:enumeration value="FIS"/>
+      <xs:enumeration value="PAR"/>
+      <xs:enumeration value="SPAR"/>
+      <xs:enumeration value="SRE"/>
+      <xs:enumeration value="TWR"/>
+      <xs:enumeration value="UAC"/>
+      <xs:enumeration value="VDF"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="IndicService">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="."/>
+      <xs:enumeration value="Approche"/>
+      <xs:enumeration value="CCM"/>
+      <xs:enumeration value="Contrôle"/>
+      <xs:enumeration value="Essais"/>
+      <xs:enumeration value="GCA"/>
+      <xs:enumeration value="Gonio"/>
+      <xs:enumeration value="Information"/>
+      <xs:enumeration value="Prévol"/>
+      <xs:enumeration value="Radar"/>
+      <xs:enumeration value="Sol"/>
+      <xs:enumeration value="Tour"/>
+      <xs:enumeration value="Trafic"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Rtba">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BA"/>
+      <xs:enumeration value="TBA"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Wgs84">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="0"/>
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="x"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ============================================ -->
+  <!-- Élément racine et conteneurs                 -->
+  <!-- ============================================ -->
+  
+  <xs:element name="Espaces" type="sia:Espaces"/>
+  <xs:element name="Bordures" type="sia:Bordures"/>
+
+  <xs:complexType name="Espaces">
+    <xs:sequence>
+      <xs:element name="Espace" type="sia:Espace" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Bordures">
+    <xs:sequence>
+      <xs:element name="Bordure" type="sia:Bordure" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ============================================ -->
+  <!-- Entité Espace (Espaces aériens)              -->
+  <!-- ============================================ -->
+  
+  <xs:complexType name="Espace">
+    <xs:annotation>
+      <xs:documentation>
+        Entité Espace (Espaces aériens) selon §6 du modèle XML-SIA v6.0
+        
+        Clés primaires (obligatoires) :
+        - Territoire : relation(Territoire) - Code du territoire
+        - TypeEspace : enum(TypeEspace) - Type d'espace aérien
+        - Nom : texte(40) - Nom de l'espace
+        
+        Attributs optionnels :
+        - AltrFt : integer - Altitude de transition (ft AMSL)
+        - AdAssocie : relation(Ad) - Aérodrome principal associé
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <!-- Éléments fils optionnels -->
+      <xs:element name="Partie" type="sia:Partie" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Service" type="sia:Service" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+
+    <!-- Attributs système -->
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+    
+    <!-- Attributs clés (obligatoires) -->
+    <xs:attribute name="TerritoireRef" type="xs:integer" use="required"/>
+    <xs:attribute name="TypeEspace" type="sia:TypeEspace" use="required"/>
+    <xs:attribute name="Nom" type="xs:string" use="required"/>
+    
+    <!-- Attributs optionnels -->
+    <xs:attribute name="AltrFt" type="xs:integer" use="optional"/>
+    <xs:attribute name="AdAssocieRef" type="xs:integer" use="optional"/>
+  </xs:complexType>
+
+  <!-- ============================================ -->
+  <!-- Entités de référence                         -->
+  <!-- ============================================ -->
+  
+  <xs:complexType name="Territoire">
+    <xs:annotation>
+      <xs:documentation>
+        Entité Territoire selon le modèle XML-SIA v6.0
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Territoire" type="xs:string"/>
+      <xs:element name="Nom" type="xs:string"/>
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Ad">
+    <xs:annotation>
+      <xs:documentation>
+        Entité Aérodrome selon le modèle XML-SIA v6.0 (version simplifiée pour les dépendances d'Espace)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <!-- Éléments de référence obligatoires pour les espaces -->
+      <xs:element name="Territoire" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Éléments principaux de l'aérodrome -->
+      <xs:element name="AdCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdAd2" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdStatut" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdNomComplet" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdNomCarto" type="xs:string" minOccurs="0"/>
+      
+      <!-- Références à d'autres entités -->
+      <xs:element name="Ctr" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            CTR associée à l'AD - Référence vers un Espace de type CTR (Zone de Contrôle)
+            Selon spéc SIA: relation(Espace) - CTR associée à l'AD
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Informations géographiques -->
+      <xs:element name="AdSituation" type="xs:string" minOccurs="0"/>
+      <xs:element name="Wgs84" type="xs:string" minOccurs="0"/>
+      <xs:element name="ArpLat" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="ArpLong" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="ArpSituation" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdRefAltFt" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AdGeoUnd" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AdRefTemp" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="AdMagVar" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="MagVarDate" type="xs:integer" minOccurs="0"/>
+      
+      <!-- Trafic autorisé -->
+      <xs:element name="TfcIntl" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcNtl" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcIfr" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcVfr" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcRegulier" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcNonRegulier" type="xs:string" minOccurs="0"/>
+      <xs:element name="TfcPrive" type="xs:string" minOccurs="0"/>
+      
+      <!-- Informations administratives -->
+      <xs:element name="AdGestion" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdAdresse" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdTel" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdAfs" type="xs:string" minOccurs="0"/>
+      <xs:element name="AdRem" type="xs:string" minOccurs="0"/>
+      
+      <!-- Horaires -->
+      <xs:element name="HorCustCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="HorAtsCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="HorMetTxt" type="xs:string" minOccurs="0"/>
+      <xs:element name="HorRem" type="xs:string" minOccurs="0"/>
+      <xs:element name="HorCustTxt" type="xs:string" minOccurs="0"/>
+      <xs:element name="HorAtsTxt" type="xs:string" minOccurs="0"/>
+      
+      <!-- Services d'escale -->
+      <xs:element name="SvcEscaleFuel" type="xs:string" minOccurs="0"/>
+      <xs:element name="SvcEscaleHangar" type="xs:string" minOccurs="0"/>
+      <xs:element name="SvcEscaleReparation" type="xs:string" minOccurs="0"/>
+      <xs:element name="SvcEscaleRem" type="xs:string" minOccurs="0"/>
+      <xs:element name="SvcPaxTransport" type="xs:string" minOccurs="0"/>
+      
+      <!-- SSLIA -->
+      <xs:element name="SsliaCat" type="xs:integer" minOccurs="0"/>
+      <xs:element name="SsliaFac" type="xs:string" minOccurs="0"/>
+      <xs:element name="SsliaRem" type="xs:string" minOccurs="0"/>
+      
+      <!-- Neige -->
+      <xs:element name="NeigePriorite" type="xs:string" minOccurs="0"/>
+      <xs:element name="NeigeEqpt" type="xs:string" minOccurs="0"/>
+      <xs:element name="NeigeRem" type="xs:string" minOccurs="0"/>
+      
+      <!-- Aires de trafic et taxiways -->
+      <xs:element name="AireTfcRevet" type="xs:string" minOccurs="0"/>
+      <xs:element name="TwyLargeur" type="xs:string" minOccurs="0"/>
+      <xs:element name="TwyRevet" type="xs:string" minOccurs="0"/>
+      <xs:element name="AireAclLoc" type="xs:string" minOccurs="0"/>
+      <xs:element name="AireAclAltFt" type="xs:string" minOccurs="0"/>
+      <xs:element name="AireRem" type="xs:string" minOccurs="0"/>
+      <xs:element name="GuidRem" type="xs:string" minOccurs="0"/>
+      
+      <!-- Météorologie -->
+      <xs:element name="MetCentre" type="xs:string" minOccurs="0"/>
+      <xs:element name="MetBriefing" type="xs:string" minOccurs="0"/>
+      <xs:element name="MetDoc" type="xs:string" minOccurs="0"/>
+      <xs:element name="MetLangue" type="xs:string" minOccurs="0"/>
+      <xs:element name="MetCartes" type="xs:string" minOccurs="0"/>
+      <xs:element name="MetRem" type="xs:string" minOccurs="0"/>
+      
+      <!-- Balisage -->
+      <xs:element name="LgtTwyLateral" type="xs:string" minOccurs="0"/>
+      
+      <!-- Alimentation secours -->
+      <xs:element name="SecoursAlim" type="xs:string" minOccurs="0"/>
+      <xs:element name="SecoursDelai" type="xs:string" minOccurs="0"/>
+      
+      <!-- Géométrie -->
+      <xs:element name="Geometrie" type="xs:string" minOccurs="0"/>
+      
+      <!-- Extension -->
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    
+    <!-- Attributs système -->
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- ============================================ -->
+  <!-- Entités liées à Espace                       -->
+  <!-- ============================================ -->
+  
+  <xs:complexType name="Partie">
+    <xs:sequence>
+      <!-- Référence à l'espace parent -->
+      <xs:element name="Espace">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Informations de la partie -->
+      <xs:element name="NomPartie" type="xs:string"/>
+      <xs:element name="NumeroPartie" type="xs:integer"/>
+      <xs:element name="Contour" type="xs:string"/>
+      <xs:element name="Geometrie" type="xs:string" minOccurs="0"/>
+      
+      <!-- Extension -->
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Volume">
+    <xs:sequence>
+      <!-- Référence à la partie parent -->
+      <xs:element name="Partie">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Informations du volume -->
+      <xs:element name="Sequence" type="xs:integer"/>
+      <xs:element name="PlafondRefUnite" type="xs:string"/>
+      <xs:element name="Plafond" type="xs:integer"/>
+      <xs:element name="PlancherRefUnite" type="xs:string"/>
+      <xs:element name="Plancher" type="xs:integer"/>
+      <xs:element name="Classe" type="xs:string"/>
+      <xs:element name="HorCode" type="xs:string"/>
+      <xs:element name="HorTxt" type="xs:string" minOccurs="0"/>
+      
+      <!-- Extension -->
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Service">
+    <xs:sequence>
+      <!-- Références à d'autres entités -->
+      <xs:element name="Espace" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Ad" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Informations du service -->
+      <xs:element name="Service" type="sia:SvcAts"/>
+      <xs:element name="IndicLieu" type="xs:string"/>
+      <xs:element name="IndicService" type="sia:IndicService"/>
+      <xs:element name="Langue" type="sia:Langue" minOccurs="0"/>
+      
+      <!-- Extension -->
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="Frequence">
+    <xs:sequence>
+      <!-- Référence au service -->
+      <xs:element name="Service">
+        <xs:complexType>
+          <xs:attribute name="pk" type="xs:integer" use="required"/>
+          <xs:attribute name="lk" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      
+      <!-- Informations de la fréquence -->
+      <xs:element name="Frequence" type="xs:decimal"/>
+      <xs:element name="HorCode" type="xs:string"/>
+      <xs:element name="SecteurSituation" type="xs:string" minOccurs="0"/>
+      <xs:element name="Remarque" type="xs:string" minOccurs="0"/>
+      
+      <!-- Extension -->
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- ============================================ -->
+  <!-- Types géométriques                           -->
+  <!-- ============================================ -->
+  
+  <xs:complexType name="Geometrie">
+    <xs:annotation>
+      <xs:documentation>
+        Représentation géométrique sous forme de polyline.
+        Format: liste de coordonnées lat,long séparées par des espaces
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Contour">
+    <xs:annotation>
+      <xs:documentation>
+        Spécification d'emprise horizontale selon §5 du modèle.
+        Syntaxe: [lat,long,methode(args)]*
+        Méthodes: ortho, parallele, arc(centre,rayon), bordure(cle)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="cercle" type="xs:boolean" default="false"/>
+        <xs:attribute name="centreLat" type="xs:decimal" use="optional"/>
+        <xs:attribute name="centreLong" type="xs:decimal" use="optional"/>
+        <xs:attribute name="rayon" type="xs:decimal" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- ============================================ -->
+  <!-- Entité Bordure (Lignes d'appui d'espaces)    -->
+  <!-- ============================================ -->
+  
+  <xs:complexType name="Bordure">
+    <xs:annotation>
+      <xs:documentation>
+        Entité Bordure (Lignes d'appui d'espaces) selon §6 du modèle XML-SIA v6.0
+        
+        Clés primaires (obligatoires) :
+        - Territoire : relation(Territoire) - Territoire de la bordure
+        - Code : texte(60) - Code d'identification
+        
+        Attributs obligatoires :
+        - Nom : texte(60) - Nom en clair
+        - Wgs84 : enum(Wgs84) - Précision coordonnées WGS84
+        - Geometrie : geometrie - Géométrie sous forme de polyline
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="Geometrie" type="sia:Geometrie"/>
+      <xs:element name="Extension" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+
+    <!-- Attributs système -->
+    <xs:attribute name="pk" type="xs:integer" use="required"/>
+    <xs:attribute name="lk" type="xs:string" use="optional"/>
+    
+    <!-- Attributs clés (obligatoires) -->
+    <xs:attribute name="TerritoireRef" type="xs:integer" use="required"/>
+    <xs:attribute name="Code" type="xs:string" use="required"/>
+    
+    <!-- Attributs obligatoires -->
+    <xs:attribute name="Nom" type="xs:string" use="required"/>
+    <xs:attribute name="Wgs84" type="sia:Wgs84" use="required"/>
+  </xs:complexType>
+
+</xs:schema>

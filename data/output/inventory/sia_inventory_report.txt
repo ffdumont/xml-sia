@@ -1,0 +1,139 @@
+====================================================================================================
+INVENTAIRE XML SIA - TYPES D'ENTITÉS ET COUVERTURE DOCUMENTAIRE
+====================================================================================================
+Fichier analysé: XML_SIA_2025-10-02.xml
+Lignes analysées: 630,787
+
+INFORMATIONS GÉNÉRALES:
+--------------------------------------------------
+Version SIA: 5
+Origine: Sia-France
+Date d'export: 2025-08-07T17:46:29.372+02:00
+Date de publication: 2025-08-21
+Date d'entrée en vigueur: 2025-10-02
+
+📊 SYNTHÈSE DE COUVERTURE:
+--------------------------------------------------
+Entités documentées SIA v6.0: 24
+Entités documentées trouvées: 23
+Entités documentées manquantes: 1
+Entités non documentées trouvées: 0
+Taux de couverture: 95.8%
+
+✅ ENTITÉS DOCUMENTÉES TROUVÉES:
+----------------------------------------------------------------------
+  Territoire      ( 23,501 occ.) - Territoires
+                    └─ Territoires où se situent les autres entités
+  Obstacle        ( 13,557 occ.) - Obstacles
+                    └─ Obstacles à la navigation aérienne
+  Partie          (  8,982 occ.) - Parties d'espaces aériens
+                    └─ Parties d'espaces aériens
+  Espace          (  8,570 occ.) - Espaces aériens
+                    └─ Espaces aériens de toutes natures
+  NavFix          (  4,709 occ.) - Points d'appui réseau de routes
+                    └─ Points d'appui du réseau de routes (aides radio comprises)
+  Volume          (  4,540 occ.) - Volumes d'espaces aériens
+                    └─ Caractéristiques du découpage vertical des espaces aériens
+  Ad              (  3,874 occ.) - Aérodromes
+                    └─ Aérodromes civils et militaires
+  Frequence       (  3,796 occ.) - Fréquences des services
+                    └─ Fréquences disponibles pour les services
+  Service         (  3,382 occ.) - Services de communications
+                    └─ Services aux vols supportés par communications sol/air
+  Rwy             (  2,316 occ.) - Pistes
+                    └─ Pistes de décollage/atterrissage des aérodromes
+  Route           (  2,306 occ.) - Routes aériennes
+                    └─ Routes aériennes (airways)
+  Segment         (  1,800 occ.) - Segments de routes
+                    └─ Caractéristiques d'une route entre deux points consécutifs
+  VorInsChk       (  1,556 occ.) - Points vérification VOR-INS
+                    └─ Points de vérification VOR-INS sur les aérodromes
+  RwyLgt          (    388 occ.) - Balisage lumineux pistes
+                    └─ Balisage lumineux des pistes
+  Ils             (    306 occ.) - Localizer des ILS
+                    └─ Radiophares d'alignement de piste (localizer, LLZ) des ILS
+  Helistation     (    276 occ.) - Hélistations
+                    └─ Hélistations civiles et militaires
+  TwyDecDist      (    272 occ.) - Réductions distance décollage
+                    └─ Réductions de distance décollage
+  RadioNav        (    226 occ.) - Aides radio
+                    └─ Aides radio (VOR, NDB, TACAN...)
+  Gp              (     97 occ.) - Glide-path des ILS
+                    └─ Radiophares d'alignement de descente (glide-path) des ILS
+  DmeIls          (     86 occ.) - DME d'atterrissage
+                    └─ DME d'atterrissage associés aux ILS
+  Phare           (     79 occ.) - Phares marins et feux aéronautiques
+                    └─ Phares marins et feux aéronautiques
+  Mkr             (     46 occ.) - Radiobornes des ILS
+                    └─ Radiobornes (OM, MM, IM) des ILS
+  Bordure         (     40 occ.) - Lignes d'appui d'espaces
+                    └─ Lignes d'appui pour description de contours d'espaces (frontières, fleuves...)
+
+❌ ENTITÉS DOCUMENTÉES MANQUANTES:
+----------------------------------------------------------------------
+  Cdr             (      0 occ.) - Restrictions segments de route
+                    └─ Restrictions d'utilisation des segments de route
+
+🔗 ATTRIBUTS D'ENTITÉS IDENTIFIÉS:
+----------------------------------------------------------------------
+  Ad              (103 attr.) : AdAd2, AdAdresse, AdAfs, AdCode, AdFax, AdGeoUnd, AdGestion, AdMagVar ... (+95 autres)
+  Bordure         (  3 attr.) : Code, Nom, Wgs84
+  DmeIls          (  5 attr.) : AltitudeFt, FlPorteeVert, Latitude, Longitude, Portee
+  Espace          (  4 attr.) : AdAssocie, AltrFt, Nom, TypeEspace
+  Frequence       ( 20 attr.) : AltitudeFt, Couverture, Espacement, FlPorteeVert, HorCode, HorTxt, IlsCat, IlsGuidage ... (+12 autres)
+  Gp              (  6 attr.) : AltitudeFt, Couverture, Latitude, Longitude, Pente, RdhM
+  Helistation     ( 24 attr.) : AltitudeFt, Atlas, Balisage, ClassePerf, DimFato, DimTlof, EnTerrasse, Exploitant ... (+16 autres)
+  Ils             (  2 attr.) : Ident, Qfu
+  Mkr             (  3 attr.) : AltitudeFt, Latitude, Longitude
+  NavFix          (  6 attr.) : Description, Ident, Latitude, Longitude, NavType, Wgs84
+  Obstacle        ( 10 attr.) : AglFt, AmslFt, Balisage, Combien, Latitude, Longitude, NumeroNom, Remarque ... (+2 autres)
+  Partie          (  4 attr.) : Contour, NomPartie, NomUsuel, NumeroPartie
+  Phare           ( 10 attr.) : HorCode, HorTxt, Intensite, Latitude, Longitude, NumeroNom, Remarque, Signal ... (+2 autres)
+  Route           (  7 attr.) : Numero, Origine, OrigineTxt, Prefixe, Remarque, RouteType, TypeCompteRendu
+  Rwy             ( 29 attr.) : AltFtDThr1, AltFtDThr2, AltFtThr1, AltFtThr2, BandeDim, Cwy1, Cwy2, Largeur ... (+21 autres)
+  RwyLgt          ( 21 attr.) : LgtApchCat, LgtApchIntensite, LgtApchLongueur, LgtAxeCouleur, LgtAxeEspace, LgtAxeIntensite, LgtAxeLongueur, LgtBordCouleur ... (+13 autres)
+  Segment         ( 17 attr.) : Acc, Circulation, CodeRnp, CodeSegmentType, CompteRendu, Distance, ExtremiteTxt, Moca ... (+9 autres)
+  Service         (  3 attr.) : IndicLieu, IndicService, Langue
+  Territoire      (  1 attr.) : Nom
+  TwyDecDist      (  3 attr.) : Qfu, ReducTkofDist, Twy
+  Volume          ( 13 attr.) : Activite, Classe, HorCode, HorTxt, Plafond, Plafond2, PlafondRefUnite, Plancher ... (+5 autres)
+  VorInsChk       (  5 attr.) : Ident, Latitude, Longitude, VorIns, Wgs84
+
+  Total attributs classifiés: 299
+
+📦 CONTENEURS D'ENTITÉS:
+--------------------------------------------------
+  AdS             (      1 occ.) - Conteneur de Aérodromes
+  BordureS        (      1 occ.) - Conteneur de Lignes d'appui d'espaces
+  CdrS            (      1 occ.) - Conteneur de Restrictions segments de route
+  DmeIlsS         (      1 occ.) - Conteneur de DME d'atterrissage
+  EspaceS         (      1 occ.) - Conteneur de Espaces aériens
+  FrequenceS      (      1 occ.) - Conteneur de Fréquences des services
+  GpS             (      1 occ.) - Conteneur de Glide-path des ILS
+  HelistationS    (      1 occ.) - Conteneur de Hélistations
+  IlsS            (      1 occ.) - Conteneur de Localizer des ILS
+  MkrS            (      1 occ.) - Conteneur de Radiobornes des ILS
+  NavFixS         (      1 occ.) - Conteneur de Points d'appui réseau de routes
+  ObstacleS       (      1 occ.) - Conteneur de Obstacles
+  PartieS         (      1 occ.) - Conteneur de Parties d'espaces aériens
+  PhareS          (      1 occ.) - Conteneur de Phares marins et feux aéronautiques
+  RadioNavS       (      1 occ.) - Conteneur de Aides radio
+  RouteS          (      1 occ.) - Conteneur de Routes aériennes
+  RwyLgtS         (      1 occ.) - Conteneur de Balisage lumineux pistes
+  RwyS            (      1 occ.) - Conteneur de Pistes
+  SegmentS        (      1 occ.) - Conteneur de Segments de routes
+  ServiceS        (      1 occ.) - Conteneur de Services de communications
+  TerritoireS     (      1 occ.) - Conteneur de Territoires
+  TwyDecDistS     (      1 occ.) - Conteneur de Réductions distance décollage
+  VolumeS         (      1 occ.) - Conteneur de Volumes d'espaces aériens
+  VorInsChkS      (      1 occ.) - Conteneur de Points vérification VOR-INS
+  XtensionS       (      1 occ.) - Conteneur d'entités non documentées
+
+📈 RÉSUMÉ FINAL:
+--------------------------------------------------
+Total types d'entités trouvées: 23
+Types de conteneurs: 25
+Attributs d'entités classifiés: 299
+Éléments techniques non classifiés: 0
+Conformité à SIA v6.0: 95.8%
+Taux de classification des éléments: 100.0%

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire XML SIA - Rapport Détaillé</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        h3 { color: #7f8c8d; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+        .summary-card { background: #ecf0f1; padding: 20px; border-radius: 5px; text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #2c3e50; }
+        .summary-value { font-size: 2em; font-weight: bold; color: #3498db; }
+        .entity-list { margin: 15px 0; }
+        .entity-item { background: #f8f9fa; margin: 5px 0; padding: 15px; border-left: 4px solid #3498db; }
+        .entity-name { font-weight: bold; color: #2c3e50; }
+        .entity-count { color: #e74c3c; font-weight: bold; }
+        .entity-description { color: #7f8c8d; font-style: italic; margin-top: 5px; }
+        .attributes { margin-top: 10px; }
+        .attribute-tag { display: inline-block; background: #3498db; color: white; padding: 2px 8px; margin: 2px; border-radius: 3px; font-size: 0.85em; }
+        .collapsible { background-color: #3498db; color: white; cursor: pointer; padding: 15px; border: none; text-align: left; outline: none; font-size: 16px; width: 100%; margin-top: 10px; }
+        .collapsible:hover { background-color: #2980b9; }
+        .collapsible.active { background-color: #2980b9; }
+        .content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: #f1f1f1; }
+        .content.show { max-height: 1000px; padding: 15px; }
+        .navigation { position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navigation ul { list-style: none; padding: 0; margin: 0; }
+        .navigation li { margin: 5px 0; }
+        .navigation a { text-decoration: none; color: #3498db; }
+        .navigation a:hover { text-decoration: underline; }
+        .missing { color: #e74c3c; }
+        .found { color: #27ae60; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #3498db; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <div class="navigation">
+        <h4>Navigation</h4>
+        <ul>
+            <li><a href="#summary">Synthèse</a></li>
+            <li><a href="#entities-found">Entités trouvées</a></li>
+            <li><a href="#entities-missing">Entités manquantes</a></li>
+            <li><a href="#attributes">Attributs détaillés</a></li>
+            <li><a href="#containers">Conteneurs</a></li>
+            <li><a href="#metadata">Métadonnées</a></li>
+        </ul>
+    </div>
+<div class="container">
+
+    <h1>📊 Inventaire XML SIA - Rapport Détaillé</h1>
+    <p><strong>Fichier analysé:</strong> XML_SIA_2025-10-02.xml</p>
+    <p><strong>Lignes analysées:</strong> 630,787</p>
+    <p><strong>Généré le:</strong> 01/10/2025 à 22:22:00</p>
+
+    <h2 id="summary">📈 Synthèse de Couverture</h2>
+    <div class="summary-grid">
+        <div class="summary-card">
+            <h3>Taux de Couverture</h3>
+            <div class="summary-value">95.8%</div>
+            <p>23/24 entités documentées trouvées</p>
+        </div>
+        <div class="summary-card">
+            <h3>Types d'Entités</h3>
+            <div class="summary-value">23</div>
+            <p>types d'entités identifiées</p>
+        </div>
+        <div class="summary-card">
+            <h3>Attributs Classifiés</h3>
+            <div class="summary-value">299</div>
+            <p>attributs d'entités identifiés</p>
+        </div>
+        <div class="summary-card">
+            <h3>Conteneurs</h3>
+            <div class="summary-value">25</div>
+            <p>types de conteneurs</p>
+        </div>
+    </div>
+<h2 id="entities-found">✅ Entités Documentées Trouvées (23)</h2>
+<div class="entity-list">
+
+        <div class="entity-item">
+            <div class="entity-name">Territoire <span class="entity-count">(23,501 occ.)</span> - Territoires</div>
+            <div class="entity-description">Territoires où se situent les autres entités</div>
+            <div class="attributes"><strong>1 attributs:</strong> <span class="attribute-tag">Nom</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Obstacle <span class="entity-count">(13,557 occ.)</span> - Obstacles</div>
+            <div class="entity-description">Obstacles à la navigation aérienne</div>
+            <div class="attributes"><strong>10 attributs:</strong> <span class="attribute-tag">AglFt</span> <span class="attribute-tag">AmslFt</span> <span class="attribute-tag">Balisage</span> <span class="attribute-tag">Combien</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">NumeroNom</span> <span class="attribute-tag">Remarque</span> <span class="attribute-tag">TypeObst</span> <span class="attribute-tag">Wgs84</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Partie <span class="entity-count">(8,982 occ.)</span> - Parties d'espaces aériens</div>
+            <div class="entity-description">Parties d'espaces aériens</div>
+            <div class="attributes"><strong>4 attributs:</strong> <span class="attribute-tag">Contour</span> <span class="attribute-tag">NomPartie</span> <span class="attribute-tag">NomUsuel</span> <span class="attribute-tag">NumeroPartie</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Espace <span class="entity-count">(8,570 occ.)</span> - Espaces aériens</div>
+            <div class="entity-description">Espaces aériens de toutes natures</div>
+            <div class="attributes"><strong>4 attributs:</strong> <span class="attribute-tag">AdAssocie</span> <span class="attribute-tag">AltrFt</span> <span class="attribute-tag">Nom</span> <span class="attribute-tag">TypeEspace</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">NavFix <span class="entity-count">(4,709 occ.)</span> - Points d'appui réseau de routes</div>
+            <div class="entity-description">Points d'appui du réseau de routes (aides radio comprises)</div>
+            <div class="attributes"><strong>6 attributs:</strong> <span class="attribute-tag">Description</span> <span class="attribute-tag">Ident</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">NavType</span> <span class="attribute-tag">Wgs84</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Volume <span class="entity-count">(4,540 occ.)</span> - Volumes d'espaces aériens</div>
+            <div class="entity-description">Caractéristiques du découpage vertical des espaces aériens</div>
+            <div class="attributes"><strong>13 attributs:</strong> <span class="attribute-tag">Activite</span> <span class="attribute-tag">Classe</span> <span class="attribute-tag">HorCode</span> <span class="attribute-tag">HorTxt</span> <span class="attribute-tag">Plafond</span> <span class="attribute-tag">Plafond2</span> <span class="attribute-tag">PlafondRefUnite</span> <span class="attribute-tag">Plancher</span> <span class="attribute-tag">Plancher2</span> <span class="attribute-tag">PlancherRefUnite</span> <span class="attribute-tag">+3 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Ad <span class="entity-count">(3,874 occ.)</span> - Aérodromes</div>
+            <div class="entity-description">Aérodromes civils et militaires</div>
+            <div class="attributes"><strong>103 attributs:</strong> <span class="attribute-tag">AdAd2</span> <span class="attribute-tag">AdAdresse</span> <span class="attribute-tag">AdAfs</span> <span class="attribute-tag">AdCode</span> <span class="attribute-tag">AdFax</span> <span class="attribute-tag">AdGeoUnd</span> <span class="attribute-tag">AdGestion</span> <span class="attribute-tag">AdMagVar</span> <span class="attribute-tag">AdNomCarto</span> <span class="attribute-tag">AdNomComplet</span> <span class="attribute-tag">+93 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Frequence <span class="entity-count">(3,796 occ.)</span> - Fréquences des services</div>
+            <div class="entity-description">Fréquences disponibles pour les services</div>
+            <div class="attributes"><strong>20 attributs:</strong> <span class="attribute-tag">AltitudeFt</span> <span class="attribute-tag">Couverture</span> <span class="attribute-tag">Espacement</span> <span class="attribute-tag">FlPorteeVert</span> <span class="attribute-tag">HorCode</span> <span class="attribute-tag">HorTxt</span> <span class="attribute-tag">IlsCat</span> <span class="attribute-tag">IlsGuidage</span> <span class="attribute-tag">IlsSecurite</span> <span class="attribute-tag">LatDme</span> <span class="attribute-tag">+10 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Service <span class="entity-count">(3,382 occ.)</span> - Services de communications</div>
+            <div class="entity-description">Services aux vols supportés par communications sol/air</div>
+            <div class="attributes"><strong>3 attributs:</strong> <span class="attribute-tag">IndicLieu</span> <span class="attribute-tag">IndicService</span> <span class="attribute-tag">Langue</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Rwy <span class="entity-count">(2,316 occ.)</span> - Pistes</div>
+            <div class="entity-description">Pistes de décollage/atterrissage des aérodromes</div>
+            <div class="attributes"><strong>29 attributs:</strong> <span class="attribute-tag">AltFtDThr1</span> <span class="attribute-tag">AltFtDThr2</span> <span class="attribute-tag">AltFtThr1</span> <span class="attribute-tag">AltFtThr2</span> <span class="attribute-tag">BandeDim</span> <span class="attribute-tag">Cwy1</span> <span class="attribute-tag">Cwy2</span> <span class="attribute-tag">Largeur</span> <span class="attribute-tag">LatDThr1</span> <span class="attribute-tag">LatDThr2</span> <span class="attribute-tag">+19 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Route <span class="entity-count">(2,306 occ.)</span> - Routes aériennes</div>
+            <div class="entity-description">Routes aériennes (airways)</div>
+            <div class="attributes"><strong>7 attributs:</strong> <span class="attribute-tag">Numero</span> <span class="attribute-tag">Origine</span> <span class="attribute-tag">OrigineTxt</span> <span class="attribute-tag">Prefixe</span> <span class="attribute-tag">Remarque</span> <span class="attribute-tag">RouteType</span> <span class="attribute-tag">TypeCompteRendu</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Segment <span class="entity-count">(1,800 occ.)</span> - Segments de routes</div>
+            <div class="entity-description">Caractéristiques d'une route entre deux points consécutifs</div>
+            <div class="attributes"><strong>17 attributs:</strong> <span class="attribute-tag">Acc</span> <span class="attribute-tag">Circulation</span> <span class="attribute-tag">CodeRnp</span> <span class="attribute-tag">CodeSegmentType</span> <span class="attribute-tag">CompteRendu</span> <span class="attribute-tag">Distance</span> <span class="attribute-tag">ExtremiteTxt</span> <span class="attribute-tag">Moca</span> <span class="attribute-tag">NavFixExtremite</span> <span class="attribute-tag">NavFixOrigine</span> <span class="attribute-tag">+7 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">VorInsChk <span class="entity-count">(1,556 occ.)</span> - Points vérification VOR-INS</div>
+            <div class="entity-description">Points de vérification VOR-INS sur les aérodromes</div>
+            <div class="attributes"><strong>5 attributs:</strong> <span class="attribute-tag">Ident</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">VorIns</span> <span class="attribute-tag">Wgs84</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">RwyLgt <span class="entity-count">(388 occ.)</span> - Balisage lumineux pistes</div>
+            <div class="entity-description">Balisage lumineux des pistes</div>
+            <div class="attributes"><strong>21 attributs:</strong> <span class="attribute-tag">LgtApchCat</span> <span class="attribute-tag">LgtApchIntensite</span> <span class="attribute-tag">LgtApchLongueur</span> <span class="attribute-tag">LgtAxeCouleur</span> <span class="attribute-tag">LgtAxeEspace</span> <span class="attribute-tag">LgtAxeIntensite</span> <span class="attribute-tag">LgtAxeLongueur</span> <span class="attribute-tag">LgtBordCouleur</span> <span class="attribute-tag">LgtBordEspace</span> <span class="attribute-tag">LgtBordIntensite</span> <span class="attribute-tag">+11 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Ils <span class="entity-count">(306 occ.)</span> - Localizer des ILS</div>
+            <div class="entity-description">Radiophares d'alignement de piste (localizer, LLZ) des ILS</div>
+            <div class="attributes"><strong>2 attributs:</strong> <span class="attribute-tag">Ident</span> <span class="attribute-tag">Qfu</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Helistation <span class="entity-count">(276 occ.)</span> - Hélistations</div>
+            <div class="entity-description">Hélistations civiles et militaires</div>
+            <div class="attributes"><strong>24 attributs:</strong> <span class="attribute-tag">AltitudeFt</span> <span class="attribute-tag">Atlas</span> <span class="attribute-tag">Balisage</span> <span class="attribute-tag">ClassePerf</span> <span class="attribute-tag">DimFato</span> <span class="attribute-tag">DimTlof</span> <span class="attribute-tag">EnTerrasse</span> <span class="attribute-tag">Exploitant</span> <span class="attribute-tag">HauteurFt</span> <span class="attribute-tag">HelRef</span> <span class="attribute-tag">+14 autres</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">TwyDecDist <span class="entity-count">(272 occ.)</span> - Réductions distance décollage</div>
+            <div class="entity-description">Réductions de distance décollage</div>
+            <div class="attributes"><strong>3 attributs:</strong> <span class="attribute-tag">Qfu</span> <span class="attribute-tag">ReducTkofDist</span> <span class="attribute-tag">Twy</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">RadioNav <span class="entity-count">(226 occ.)</span> - Aides radio</div>
+            <div class="entity-description">Aides radio (VOR, NDB, TACAN...)</div>
+            <div class="attributes"><strong>0 attributs:</strong> </div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Gp <span class="entity-count">(97 occ.)</span> - Glide-path des ILS</div>
+            <div class="entity-description">Radiophares d'alignement de descente (glide-path) des ILS</div>
+            <div class="attributes"><strong>6 attributs:</strong> <span class="attribute-tag">AltitudeFt</span> <span class="attribute-tag">Couverture</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">Pente</span> <span class="attribute-tag">RdhM</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">DmeIls <span class="entity-count">(86 occ.)</span> - DME d'atterrissage</div>
+            <div class="entity-description">DME d'atterrissage associés aux ILS</div>
+            <div class="attributes"><strong>5 attributs:</strong> <span class="attribute-tag">AltitudeFt</span> <span class="attribute-tag">FlPorteeVert</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">Portee</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Phare <span class="entity-count">(79 occ.)</span> - Phares marins et feux aéronautiques</div>
+            <div class="entity-description">Phares marins et feux aéronautiques</div>
+            <div class="attributes"><strong>10 attributs:</strong> <span class="attribute-tag">HorCode</span> <span class="attribute-tag">HorTxt</span> <span class="attribute-tag">Intensite</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span> <span class="attribute-tag">NumeroNom</span> <span class="attribute-tag">Remarque</span> <span class="attribute-tag">Signal</span> <span class="attribute-tag">Type</span> <span class="attribute-tag">Wgs84</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Mkr <span class="entity-count">(46 occ.)</span> - Radiobornes des ILS</div>
+            <div class="entity-description">Radiobornes (OM, MM, IM) des ILS</div>
+            <div class="attributes"><strong>3 attributs:</strong> <span class="attribute-tag">AltitudeFt</span> <span class="attribute-tag">Latitude</span> <span class="attribute-tag">Longitude</span></div>
+        </div>
+
+        <div class="entity-item">
+            <div class="entity-name">Bordure <span class="entity-count">(40 occ.)</span> - Lignes d'appui d'espaces</div>
+            <div class="entity-description">Lignes d'appui pour description de contours d'espaces (frontières, fleuves...)</div>
+            <div class="attributes"><strong>3 attributs:</strong> <span class="attribute-tag">Code</span> <span class="attribute-tag">Nom</span> <span class="attribute-tag">Wgs84</span></div>
+        </div>
+</div>
+<h2 id="entities-missing">❌ Entités Documentées Manquantes (1)</h2>
+<div class="entity-list">
+
+            <div class="entity-item">
+                <div class="entity-name missing">Cdr - Restrictions segments de route</div>
+                <div class="entity-description">Restrictions d'utilisation des segments de route</div>
+            </div>
+</div>
+<h2 id="attributes">🔗 Attributs Détaillés par Entité</h2>
+
+        <button class="collapsible">Ad (103 attributs) - Aérodromes</button>
+        <div class="content">
+            <p><em>Aérodromes civils et militaires</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AdAd2</span>
+<span class="attribute-tag">AdAdresse</span>
+<span class="attribute-tag">AdAfs</span>
+<span class="attribute-tag">AdCode</span>
+<span class="attribute-tag">AdFax</span>
+<span class="attribute-tag">AdGeoUnd</span>
+<span class="attribute-tag">AdGestion</span>
+<span class="attribute-tag">AdMagVar</span>
+<span class="attribute-tag">AdNomCarto</span>
+<span class="attribute-tag">AdNomComplet</span>
+<span class="attribute-tag">AdRefAltFt</span>
+<span class="attribute-tag">AdRefTemp</span>
+<span class="attribute-tag">AdRem</span>
+<span class="attribute-tag">AdSituation</span>
+<span class="attribute-tag">AdStatut</span>
+<span class="attribute-tag">AdTel</span>
+<span class="attribute-tag">AdTelex</span>
+<span class="attribute-tag">AireAclAltFt</span>
+<span class="attribute-tag">AireAclLoc</span>
+<span class="attribute-tag">AireRem</span>
+<span class="attribute-tag">AireTfcResist</span>
+<span class="attribute-tag">AireTfcRevet</span>
+<span class="attribute-tag">ArpLat</span>
+<span class="attribute-tag">ArpLong</span>
+<span class="attribute-tag">ArpSituation</span>
+<span class="attribute-tag">Cartes</span>
+<span class="attribute-tag">Ctr</span>
+<span class="attribute-tag">GuidAccost</span>
+<span class="attribute-tag">GuidRem</span>
+<span class="attribute-tag">GuidRwy</span>
+<span class="attribute-tag">GuidStopBars</span>
+<span class="attribute-tag">GuidTwy</span>
+<span class="attribute-tag">HorAdminCode</span>
+<span class="attribute-tag">HorAdminTxt</span>
+<span class="attribute-tag">HorAtsCode</span>
+<span class="attribute-tag">HorAtsTxt</span>
+<span class="attribute-tag">HorAvtTxt</span>
+<span class="attribute-tag">HorBdpTxt</span>
+<span class="attribute-tag">HorBiaTxt</span>
+<span class="attribute-tag">HorCustCode</span>
+<span class="attribute-tag">HorCustTxt</span>
+<span class="attribute-tag">HorDegivrageTxt</span>
+<span class="attribute-tag">HorManutentionTxt</span>
+<span class="attribute-tag">HorMetTxt</span>
+<span class="attribute-tag">HorRem</span>
+<span class="attribute-tag">HorSanTxt</span>
+<span class="attribute-tag">HorSureteTxt</span>
+<span class="attribute-tag">LgtAbn</span>
+<span class="attribute-tag">LgtIbn</span>
+<span class="attribute-tag">LgtLdi</span>
+<span class="attribute-tag">LgtRem</span>
+<span class="attribute-tag">LgtTwyAxial</span>
+<span class="attribute-tag">LgtTwyLateral</span>
+<span class="attribute-tag">LgtWdi</span>
+<span class="attribute-tag">MagVarDate</span>
+<span class="attribute-tag">MetAltnCentre</span>
+<span class="attribute-tag">MetAts</span>
+<span class="attribute-tag">MetBriefing</span>
+<span class="attribute-tag">MetCartes</span>
+<span class="attribute-tag">MetCentre</span>
+<span class="attribute-tag">MetComplement</span>
+<span class="attribute-tag">MetDoc</span>
+<span class="attribute-tag">MetLangue</span>
+<span class="attribute-tag">MetPreviAtt</span>
+<span class="attribute-tag">MetPreviPeriode</span>
+<span class="attribute-tag">MetRem</span>
+<span class="attribute-tag">MetTafCentre</span>
+<span class="attribute-tag">MetTafValidite</span>
+<span class="attribute-tag">NeigeEqpt</span>
+<span class="attribute-tag">NeigePriorite</span>
+<span class="attribute-tag">NeigeRem</span>
+<span class="attribute-tag">PkgId</span>
+<span class="attribute-tag">SecoursAlim</span>
+<span class="attribute-tag">SecoursDelai</span>
+<span class="attribute-tag">SsliaAcft</span>
+<span class="attribute-tag">SsliaCat</span>
+<span class="attribute-tag">SsliaFac</span>
+<span class="attribute-tag">SsliaRem</span>
+<span class="attribute-tag">SvcEscaleDegivrage</span>
+<span class="attribute-tag">SvcEscaleFret</span>
+<span class="attribute-tag">SvcEscaleFuel</span>
+<span class="attribute-tag">SvcEscaleFuelRem</span>
+<span class="attribute-tag">SvcEscaleHangar</span>
+<span class="attribute-tag">SvcEscaleRem</span>
+<span class="attribute-tag">SvcEscaleReparation</span>
+<span class="attribute-tag">SvcPaxBanque</span>
+<span class="attribute-tag">SvcPaxHotel</span>
+<span class="attribute-tag">SvcPaxRem</span>
+<span class="attribute-tag">SvcPaxResto</span>
+<span class="attribute-tag">SvcPaxSan</span>
+<span class="attribute-tag">SvcPaxTourisme</span>
+<span class="attribute-tag">SvcPaxTransport</span>
+<span class="attribute-tag">TfcIfr</span>
+<span class="attribute-tag">TfcIntl</span>
+<span class="attribute-tag">TfcNonRegulier</span>
+<span class="attribute-tag">TfcNtl</span>
+<span class="attribute-tag">TfcPrive</span>
+<span class="attribute-tag">TfcRegulier</span>
+<span class="attribute-tag">TfcVfr</span>
+<span class="attribute-tag">TwyLargeur</span>
+<span class="attribute-tag">TwyResist</span>
+<span class="attribute-tag">TwyRevet</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+
+        <button class="collapsible">Bordure (3 attributs) - Lignes d'appui d'espaces</button>
+        <div class="content">
+            <p><em>Lignes d'appui pour description de contours d'espaces (frontières, fleuves...)</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Code</span>
+<span class="attribute-tag">Nom</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+
+        <button class="collapsible">DmeIls (5 attributs) - DME d'atterrissage</button>
+        <div class="content">
+            <p><em>DME d'atterrissage associés aux ILS</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltitudeFt</span>
+<span class="attribute-tag">FlPorteeVert</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">Portee</span>
+</div></div>
+
+        <button class="collapsible">Espace (4 attributs) - Espaces aériens</button>
+        <div class="content">
+            <p><em>Espaces aériens de toutes natures</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AdAssocie</span>
+<span class="attribute-tag">AltrFt</span>
+<span class="attribute-tag">Nom</span>
+<span class="attribute-tag">TypeEspace</span>
+</div></div>
+
+        <button class="collapsible">Frequence (20 attributs) - Fréquences des services</button>
+        <div class="content">
+            <p><em>Fréquences disponibles pour les services</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltitudeFt</span>
+<span class="attribute-tag">Couverture</span>
+<span class="attribute-tag">Espacement</span>
+<span class="attribute-tag">FlPorteeVert</span>
+<span class="attribute-tag">HorCode</span>
+<span class="attribute-tag">HorTxt</span>
+<span class="attribute-tag">IlsCat</span>
+<span class="attribute-tag">IlsGuidage</span>
+<span class="attribute-tag">IlsSecurite</span>
+<span class="attribute-tag">LatDme</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">LongDme</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">NomPhraseo</span>
+<span class="attribute-tag">Portee</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">SecteurSituation</span>
+<span class="attribute-tag">Station</span>
+<span class="attribute-tag">Suppletive</span>
+<span class="attribute-tag">Usage</span>
+</div></div>
+
+        <button class="collapsible">Gp (6 attributs) - Glide-path des ILS</button>
+        <div class="content">
+            <p><em>Radiophares d'alignement de descente (glide-path) des ILS</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltitudeFt</span>
+<span class="attribute-tag">Couverture</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">Pente</span>
+<span class="attribute-tag">RdhM</span>
+</div></div>
+
+        <button class="collapsible">Helistation (24 attributs) - Hélistations</button>
+        <div class="content">
+            <p><em>Hélistations civiles et militaires</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltitudeFt</span>
+<span class="attribute-tag">Atlas</span>
+<span class="attribute-tag">Balisage</span>
+<span class="attribute-tag">ClassePerf</span>
+<span class="attribute-tag">DimFato</span>
+<span class="attribute-tag">DimTlof</span>
+<span class="attribute-tag">EnTerrasse</span>
+<span class="attribute-tag">Exploitant</span>
+<span class="attribute-tag">HauteurFt</span>
+<span class="attribute-tag">HelRef</span>
+<span class="attribute-tag">HorTxt</span>
+<span class="attribute-tag">Ifr</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">Nom</span>
+<span class="attribute-tag">Nuit</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">Resistance</span>
+<span class="attribute-tag">Revetement</span>
+<span class="attribute-tag">SousCat</span>
+<span class="attribute-tag">Sslia</span>
+<span class="attribute-tag">Statut</span>
+<span class="attribute-tag">Wgs84</span>
+<span class="attribute-tag">ZoneHabitee</span>
+</div></div>
+
+        <button class="collapsible">Ils (2 attributs) - Localizer des ILS</button>
+        <div class="content">
+            <p><em>Radiophares d'alignement de piste (localizer, LLZ) des ILS</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Ident</span>
+<span class="attribute-tag">Qfu</span>
+</div></div>
+
+        <button class="collapsible">Mkr (3 attributs) - Radiobornes des ILS</button>
+        <div class="content">
+            <p><em>Radiobornes (OM, MM, IM) des ILS</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltitudeFt</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+</div></div>
+
+        <button class="collapsible">NavFix (6 attributs) - Points d'appui réseau de routes</button>
+        <div class="content">
+            <p><em>Points d'appui du réseau de routes (aides radio comprises)</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Description</span>
+<span class="attribute-tag">Ident</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">NavType</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+
+        <button class="collapsible">Obstacle (10 attributs) - Obstacles</button>
+        <div class="content">
+            <p><em>Obstacles à la navigation aérienne</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AglFt</span>
+<span class="attribute-tag">AmslFt</span>
+<span class="attribute-tag">Balisage</span>
+<span class="attribute-tag">Combien</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">NumeroNom</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">TypeObst</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+
+        <button class="collapsible">Partie (4 attributs) - Parties d'espaces aériens</button>
+        <div class="content">
+            <p><em>Parties d'espaces aériens</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Contour</span>
+<span class="attribute-tag">NomPartie</span>
+<span class="attribute-tag">NomUsuel</span>
+<span class="attribute-tag">NumeroPartie</span>
+</div></div>
+
+        <button class="collapsible">Phare (10 attributs) - Phares marins et feux aéronautiques</button>
+        <div class="content">
+            <p><em>Phares marins et feux aéronautiques</em></p>
+            <div class="attributes">
+<span class="attribute-tag">HorCode</span>
+<span class="attribute-tag">HorTxt</span>
+<span class="attribute-tag">Intensite</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">NumeroNom</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">Signal</span>
+<span class="attribute-tag">Type</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+
+        <button class="collapsible">Route (7 attributs) - Routes aériennes</button>
+        <div class="content">
+            <p><em>Routes aériennes (airways)</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Numero</span>
+<span class="attribute-tag">Origine</span>
+<span class="attribute-tag">OrigineTxt</span>
+<span class="attribute-tag">Prefixe</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">RouteType</span>
+<span class="attribute-tag">TypeCompteRendu</span>
+</div></div>
+
+        <button class="collapsible">Rwy (29 attributs) - Pistes</button>
+        <div class="content">
+            <p><em>Pistes de décollage/atterrissage des aérodromes</em></p>
+            <div class="attributes">
+<span class="attribute-tag">AltFtDThr1</span>
+<span class="attribute-tag">AltFtDThr2</span>
+<span class="attribute-tag">AltFtThr1</span>
+<span class="attribute-tag">AltFtThr2</span>
+<span class="attribute-tag">BandeDim</span>
+<span class="attribute-tag">Cwy1</span>
+<span class="attribute-tag">Cwy2</span>
+<span class="attribute-tag">Largeur</span>
+<span class="attribute-tag">LatDThr1</span>
+<span class="attribute-tag">LatDThr2</span>
+<span class="attribute-tag">LatThr1</span>
+<span class="attribute-tag">LatThr2</span>
+<span class="attribute-tag">Lda1</span>
+<span class="attribute-tag">Lda2</span>
+<span class="attribute-tag">LongDThr1</span>
+<span class="attribute-tag">LongDThr2</span>
+<span class="attribute-tag">LongThr1</span>
+<span class="attribute-tag">LongThr2</span>
+<span class="attribute-tag">Longueur</span>
+<span class="attribute-tag">OrientationGeo</span>
+<span class="attribute-tag">Principale</span>
+<span class="attribute-tag">RemDecDist1</span>
+<span class="attribute-tag">RemDecDist2</span>
+<span class="attribute-tag">Resistance</span>
+<span class="attribute-tag">Revetement</span>
+<span class="attribute-tag">RwyRem1</span>
+<span class="attribute-tag">RwyRem2</span>
+<span class="attribute-tag">Swy1</span>
+<span class="attribute-tag">Swy2</span>
+</div></div>
+
+        <button class="collapsible">RwyLgt (21 attributs) - Balisage lumineux pistes</button>
+        <div class="content">
+            <p><em>Balisage lumineux des pistes</em></p>
+            <div class="attributes">
+<span class="attribute-tag">LgtApchCat</span>
+<span class="attribute-tag">LgtApchIntensite</span>
+<span class="attribute-tag">LgtApchLongueur</span>
+<span class="attribute-tag">LgtAxeCouleur</span>
+<span class="attribute-tag">LgtAxeEspace</span>
+<span class="attribute-tag">LgtAxeIntensite</span>
+<span class="attribute-tag">LgtAxeLongueur</span>
+<span class="attribute-tag">LgtBordCouleur</span>
+<span class="attribute-tag">LgtBordEspace</span>
+<span class="attribute-tag">LgtBordIntensite</span>
+<span class="attribute-tag">LgtBordLongueur</span>
+<span class="attribute-tag">LgtFinCouleur</span>
+<span class="attribute-tag">LgtRem</span>
+<span class="attribute-tag">LgtSwyCouleur</span>
+<span class="attribute-tag">LgtSwyLongueur</span>
+<span class="attribute-tag">LgtTdzLongueur</span>
+<span class="attribute-tag">LgtThrCouleur</span>
+<span class="attribute-tag">MehtFt</span>
+<span class="attribute-tag">PapiVasis</span>
+<span class="attribute-tag">PapiVasisPente</span>
+<span class="attribute-tag">Qfu</span>
+</div></div>
+
+        <button class="collapsible">Segment (17 attributs) - Segments de routes</button>
+        <div class="content">
+            <p><em>Caractéristiques d'une route entre deux points consécutifs</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Acc</span>
+<span class="attribute-tag">Circulation</span>
+<span class="attribute-tag">CodeRnp</span>
+<span class="attribute-tag">CodeSegmentType</span>
+<span class="attribute-tag">CompteRendu</span>
+<span class="attribute-tag">Distance</span>
+<span class="attribute-tag">ExtremiteTxt</span>
+<span class="attribute-tag">Moca</span>
+<span class="attribute-tag">NavFixExtremite</span>
+<span class="attribute-tag">NavFixOrigine</span>
+<span class="attribute-tag">Plafond</span>
+<span class="attribute-tag">PlafondRefUnite</span>
+<span class="attribute-tag">Plancher</span>
+<span class="attribute-tag">PlancherRefUnite</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">RouteMag</span>
+<span class="attribute-tag">Sequence</span>
+</div></div>
+
+        <button class="collapsible">Service (3 attributs) - Services de communications</button>
+        <div class="content">
+            <p><em>Services aux vols supportés par communications sol/air</em></p>
+            <div class="attributes">
+<span class="attribute-tag">IndicLieu</span>
+<span class="attribute-tag">IndicService</span>
+<span class="attribute-tag">Langue</span>
+</div></div>
+
+        <button class="collapsible">Territoire (1 attributs) - Territoires</button>
+        <div class="content">
+            <p><em>Territoires où se situent les autres entités</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Nom</span>
+</div></div>
+
+        <button class="collapsible">TwyDecDist (3 attributs) - Réductions distance décollage</button>
+        <div class="content">
+            <p><em>Réductions de distance décollage</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Qfu</span>
+<span class="attribute-tag">ReducTkofDist</span>
+<span class="attribute-tag">Twy</span>
+</div></div>
+
+        <button class="collapsible">Volume (13 attributs) - Volumes d'espaces aériens</button>
+        <div class="content">
+            <p><em>Caractéristiques du découpage vertical des espaces aériens</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Activite</span>
+<span class="attribute-tag">Classe</span>
+<span class="attribute-tag">HorCode</span>
+<span class="attribute-tag">HorTxt</span>
+<span class="attribute-tag">Plafond</span>
+<span class="attribute-tag">Plafond2</span>
+<span class="attribute-tag">PlafondRefUnite</span>
+<span class="attribute-tag">Plancher</span>
+<span class="attribute-tag">Plancher2</span>
+<span class="attribute-tag">PlancherRefUnite</span>
+<span class="attribute-tag">Remarque</span>
+<span class="attribute-tag">Rtba</span>
+<span class="attribute-tag">Sequence</span>
+</div></div>
+
+        <button class="collapsible">VorInsChk (5 attributs) - Points vérification VOR-INS</button>
+        <div class="content">
+            <p><em>Points de vérification VOR-INS sur les aérodromes</em></p>
+            <div class="attributes">
+<span class="attribute-tag">Ident</span>
+<span class="attribute-tag">Latitude</span>
+<span class="attribute-tag">Longitude</span>
+<span class="attribute-tag">VorIns</span>
+<span class="attribute-tag">Wgs84</span>
+</div></div>
+<h2 id="containers">📦 Conteneurs d'Entités (25)</h2>
+<table>
+<tr><th>Conteneur</th><th>Occurrences</th><th>Description</th></tr>
+<tr><td>AdS</td><td style="text-align: center;">1</td><td>Conteneur de Aérodromes</td></tr>
+<tr><td>BordureS</td><td style="text-align: center;">1</td><td>Conteneur de Lignes d'appui d'espaces</td></tr>
+<tr><td>CdrS</td><td style="text-align: center;">1</td><td>Conteneur de Restrictions segments de route</td></tr>
+<tr><td>DmeIlsS</td><td style="text-align: center;">1</td><td>Conteneur de DME d'atterrissage</td></tr>
+<tr><td>EspaceS</td><td style="text-align: center;">1</td><td>Conteneur de Espaces aériens</td></tr>
+<tr><td>FrequenceS</td><td style="text-align: center;">1</td><td>Conteneur de Fréquences des services</td></tr>
+<tr><td>GpS</td><td style="text-align: center;">1</td><td>Conteneur de Glide-path des ILS</td></tr>
+<tr><td>HelistationS</td><td style="text-align: center;">1</td><td>Conteneur de Hélistations</td></tr>
+<tr><td>IlsS</td><td style="text-align: center;">1</td><td>Conteneur de Localizer des ILS</td></tr>
+<tr><td>MkrS</td><td style="text-align: center;">1</td><td>Conteneur de Radiobornes des ILS</td></tr>
+<tr><td>NavFixS</td><td style="text-align: center;">1</td><td>Conteneur de Points d'appui réseau de routes</td></tr>
+<tr><td>ObstacleS</td><td style="text-align: center;">1</td><td>Conteneur de Obstacles</td></tr>
+<tr><td>PartieS</td><td style="text-align: center;">1</td><td>Conteneur de Parties d'espaces aériens</td></tr>
+<tr><td>PhareS</td><td style="text-align: center;">1</td><td>Conteneur de Phares marins et feux aéronautiques</td></tr>
+<tr><td>RadioNavS</td><td style="text-align: center;">1</td><td>Conteneur de Aides radio</td></tr>
+<tr><td>RouteS</td><td style="text-align: center;">1</td><td>Conteneur de Routes aériennes</td></tr>
+<tr><td>RwyLgtS</td><td style="text-align: center;">1</td><td>Conteneur de Balisage lumineux pistes</td></tr>
+<tr><td>RwyS</td><td style="text-align: center;">1</td><td>Conteneur de Pistes</td></tr>
+<tr><td>SegmentS</td><td style="text-align: center;">1</td><td>Conteneur de Segments de routes</td></tr>
+<tr><td>ServiceS</td><td style="text-align: center;">1</td><td>Conteneur de Services de communications</td></tr>
+<tr><td>TerritoireS</td><td style="text-align: center;">1</td><td>Conteneur de Territoires</td></tr>
+<tr><td>TwyDecDistS</td><td style="text-align: center;">1</td><td>Conteneur de Réductions distance décollage</td></tr>
+<tr><td>VolumeS</td><td style="text-align: center;">1</td><td>Conteneur de Volumes d'espaces aériens</td></tr>
+<tr><td>VorInsChkS</td><td style="text-align: center;">1</td><td>Conteneur de Points vérification VOR-INS</td></tr>
+<tr><td>XtensionS</td><td style="text-align: center;">1</td><td>Conteneur de Non documenté</td></tr>
+</table>
+<h2 id="metadata">📋 Métadonnées du Fichier XML</h2>
+<table>
+<tr><td><strong>Export Date</strong></td><td>2025-08-07T17:46:29.372+02:00</td></tr>
+<tr><td><strong>Origine</strong></td><td>Sia-France</td></tr>
+<tr><td><strong>Version</strong></td><td>5</td></tr>
+<tr><td><strong>Publication Date</strong></td><td>2025-08-21</td></tr>
+<tr><td><strong>Effective Date</strong></td><td>2025-10-02</td></tr>
+</table>
+
+    <script>
+        document.querySelectorAll('.collapsible').forEach(function(collapsible) {
+            collapsible.addEventListener('click', function() {
+                this.classList.toggle('active');
+                var content = this.nextElementSibling;
+                content.classList.toggle('show');
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
