@@ -69,3 +69,11 @@ Thumbs.db
 
 # Documentation temporaire
 docs/_build/
+
+# Données et bases de données
+*.db
+*.sqlite
+*.sqlite3
+data-output/kml/*.kml
+data-output/*.xml
+sia_*.db
