@@ -1,0 +1,63 @@
+# Configuration des couleurs pour les espaces aériens
+# Format: Type;Classe;Couleur_KML;Couleur_Hex;Description
+# Couleur_KML au format ABGR (Alpha-Blue-Green-Red) pour Google Earth
+# Couleur_Hex au format standard #RRGGBB pour d'autres usages
+
+# Espaces de contrôle - Classe A (rouge)
+TMA;A;ff0000ff;#FF0000;Espace contrôlé classe A - Rouge
+CTA;A;ff0000ff;#FF0000;Espace contrôlé classe A - Rouge  
+LTA;A;ff0000ff;#FF0000;Espace contrôlé classe A - Rouge
+CTR;A;ff0000ff;#FF0000;Espace contrôlé classe A - Rouge (rare)
+
+# Espaces de contrôle - Classe B, C, D (bleu foncé)
+TMA;B;ffcc6600;#0066CC;Espace contrôlé classe B - Bleu foncé
+TMA;C;ffcc6600;#0066CC;Espace contrôlé classe C - Bleu foncé
+TMA;D;ffcc6600;#0066CC;Espace contrôlé classe D - Bleu foncé
+CTA;B;ffcc6600;#0066CC;Espace contrôlé classe B - Bleu foncé
+CTA;C;ffcc6600;#0066CC;Espace contrôlé classe C - Bleu foncé
+CTA;D;ffcc6600;#0066CC;Espace contrôlé classe D - Bleu foncé
+LTA;B;ffcc6600;#0066CC;Espace contrôlé classe B - Bleu foncé
+LTA;C;ffcc6600;#0066CC;Espace contrôlé classe C - Bleu foncé
+LTA;D;ffcc6600;#0066CC;Espace contrôlé classe D - Bleu foncé
+CTR;D;ffcc6600;#0066CC;CTR classe D - Bleu foncé (standard)
+
+# Espaces de contrôle - Classe E (bleu clair)
+TMA;E;ffff9966;#6699FF;Espace contrôlé classe E - Bleu clair
+CTA;E;ffff9966;#6699FF;Espace contrôlé classe E - Bleu clair
+LTA;E;ffff9966;#6699FF;Espace contrôlé classe E - Bleu clair
+
+# Autres espaces de contrôle (bleu foncé par défaut)
+ACC;;ffcc6600;#0066CC;Centre de contrôle régional
+CTL;;ffcc6600;#0066CC;Zone de contrôle
+OCA;;ffcc6600;#0066CC;Zone de contrôle océanique
+S/CTA;;ffcc6600;#0066CC;Secteur de CTA
+S/CTR;;ffcc6600;#0066CC;Secteur de CTR
+UAC;;ffcc6600;#0066CC;Zone de contrôle supérieure
+UTA;;ffcc6600;#0066CC;Zone de contrôle terminal supérieure
+
+# Espaces d'information (bleu clair)
+FIR;;ffff9966;#6699FF;Région d'information de vol
+SIV;;ffff9966;#6699FF;Service d'information de vol
+UIR;;ffff9966;#6699FF;Région supérieure d'information
+
+# Zones spéciales (rouge)
+D;;ff0000ff;#FF0000;Zone dangereuse - Rouge
+P;;ff0000ff;#FF0000;Zone interdite - Rouge
+R;;ff0000ff;#FF0000;Zone réglementée - Rouge
+ZIT;;ff0000ff;#FF0000;Zone interdite temporaire - Rouge
+ZRT;;ff0000ff;#FF0000;Zone réglementée temporaire - Rouge
+CBA;;ff0000ff;#FF0000;Cross Border Area - Rouge
+
+# Activités de loisirs (orange/jaune)
+Aer;;ff0099ff;#FF9900;Activité aéronautique - Orange
+Bal;;ff0099ff;#FF9900;Activité de ballons - Orange
+Pje;;ff0099ff;#FF9900;Parachutage - Orange
+Tr Pla;;ff0099ff;#FF9900;Treuillage planeur - Orange
+Tr VL;;ff0099ff;#FF9900;Treuillage vol libre - Orange
+Tr PVL;;ff0099ff;#FF9900;Treuillage parapente/vol libre - Orange
+Vol;;ff0099ff;#FF9900;Activité de vol à voile - Orange
+
+# Zones spécifiques (gris/autre)
+PRN;;ff666666;#666666;Procédure de navigation - Gris
+SUR;;ff666666;#666666;Zone de surveillance - Gris
+NAV;;ff666666;#666666;Zone de navigation - Gris

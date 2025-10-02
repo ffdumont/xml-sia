@@ -17,11 +17,8 @@ from typing import List, Dict, Optional, Tuple
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
-# Import du service de couleurs avec gestion des imports relatifs/absolus
-try:
-    from .color_service import get_space_color
-except ImportError:
-    from color_service import get_space_color
+# Import du service de couleurs
+from .color_service import get_space_color
 
 class KMLExtractor:
     """

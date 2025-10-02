@@ -74,6 +74,9 @@ docs/_build/
 *.db
 *.sqlite
 *.sqlite3
+sia_*.db
+
+# Fichiers de sortie générés
 data-output/kml/*.kml
 data-output/*.xml
-sia_*.db
+*.kml

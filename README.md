@@ -1,6 +1,7 @@
 # XML-SIA : Extraction et validation d'espaces aériens
 
-Outils d'extraction et de validation pour les données XML-SIA (Système d'Information Aéronautique) version 6.0.
+Outils d'extracti# 4. Générer KML 3D avec couleurs OACI
+python generate_kml.py --espace-lk "[LF][TMA AVORD]" --database sia_database_avord.db --output data-output/kml/TMA_AVORD.kml et de validation pour les données XML-SIA (Système d'Information Aéronautique) version 6.0.
 
 ## 🎯 Objectif
 
@@ -10,10 +11,12 @@ Extraire des espaces aériens spécifiques du fichier XML-SIA officiel avec tout
 
 ```
 xml-sia/
-├── core/                          # Programmes principaux de production
+├── kml/                           # Module de génération KML avec couleurs OACI
+│   ├── extractor.py              # Extraction KML 3D des volumes aériens
+│   └── color_service.py          # Service de couleurs selon standards OACI
+├── extraction/                    # Module d'extraction et recherche
 │   ├── extract_espace.py         # Extraction XSD d'espaces avec dépendances
-│   ├── kml_extractor.py          # Génération KML 3D des volumes aériens
-│   └── search_entities.py        # Service de recherche d'entités par mot-clé
+│   └── list_entities.py          # Service de listing et recherche d'entités
 ├── utils/                         # Utilitaires de base de données et validation
 │   ├── check_db.py               # Vérification de la base de données
 │   ├── schema_generator.py       # Génération de schémas
@@ -22,10 +25,10 @@ xml-sia/
 │   └── sia_entity_inventory.py   # Inventaire des entités SIA
 ├── schemas/                       # Schémas XSD et validation
 │   ├── check_coherence.py        # Validation XSD vs spécification
-│   └── extract_espace.py         # Legacy - utiliser core/extract_espace.py
+│   └── extract_espace.py         # Legacy - utiliser extraction/extract_espace.py
 ├── tools/                         # Outils legacy
-│   ├── check_coherence.py        # Legacy - utiliser schemas/check_coherence.py
-│   └── extract_espace.py         # Legacy - utiliser core/extract_espace.py
+│   ├── check_coherence.py        # Legacy - utiliser validation/check_coherence.py
+│   └── extract_espace.py         # Legacy - utiliser extraction/extract_espace.py
 ├── data-input/                    # Données sources SIA  
 │   ├── schemas/                  # Schémas XSD (incluant Espace.xsd)
 │   └── XML_SIA_2025-10-02.xml   # Fichier XML SIA principal
@@ -44,65 +47,65 @@ xml-sia/
 ### Extraction d'un espace aérien
 ```bash
 # Extraire la TMA Le Bourget avec toutes ses dépendances
-python core/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
+python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
 
 # Extraire une CTR par pk
-python core/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "1204" --verbose
+python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "1204" --verbose
 ```
 
 ### Génération KML 3D
 ```bash
 # Générer un volume KML 3D pour un espace aérien
-python core/kml_extractor.py --espace-lk "[LF][TMA LE BOURGET]"
+python generate_kml.py --espace-lk "[LF][TMA LE BOURGET]"
 
-# Rechercher des espaces par mot-clé
-python core/search_entities.py -k "TMA" --max-results 10
+# Lister les espaces TMA disponibles
+python extraction/list_entities.py --type espace --space-type TMA
 ```
 
 ### Workflow complet (recherche → extraction → base → KML)
 ```bash
 # 1. Rechercher l'espace
-python core/search_entities.py -k "AVORD" --source xml --xml-file data-input/XML_SIA_2025-10-02.xml
+python extraction/list_entities.py -k "AVORD" --source xml --xml-file data-input/XML_SIA_2025-10-02.xml
 
 # 2. Extraire avec dépendances  
-python core/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA AVORD]" --output data-output/TMA_AVORD.xml
+python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA AVORD]" --output data-output/TMA_AVORD.xml
 
 # 3. Créer base dédiée
 python utils/schema_generator.py --xsd data-input/schemas/Espace.xsd --database tma_avord.db
 python utils/xml_importer.py --xml data-output/TMA_AVORD.xml --database tma_avord.db
 
-# 4. Générer KML 3D
-python core/kml_extractor.py --espace-lk "[LF][TMA AVORD]" --database tma_avord.db --output data-output/kml/TMA_AVORD.kml
+# 4. Générer KML 3D avec couleurs OACI
+python generate_kml.py --espace-lk "[LF][TMA AVORD]" --database tma_avord.db --output data-output/kml/TMA_AVORD.kml
 ```
 
 ### Validation de cohérence
 ```bash
 # Vérifier la cohérence XSD vs spécification SIA
-python schemas/check_coherence.py
+python validation/check_coherence.py
 ```
 
 ## 📊 Fonctionnalités principales
 
-### 🎯 Extraction d'espaces aériens (`core/extract_espace.py`)
+### 🎯 Extraction d'espaces aériens (`extraction/extract_espace.py`)
 - **Extraction ciblée** par identifiant `lk` ou `pk`
 - **Résolution automatique** de toutes les dépendances
 - **Validation XSD** intégrée
 - **Formatage XML** optimisé (réduction 57% des lignes vides)
 - **Support complet** : TMA, CTR, espaces complexes
 
-### 🗺️ Génération KML 3D (`core/kml_extractor.py`)
+### 🗺️ Génération KML 3D (`generate_kml.py` avec `kml/extractor.py`)
 - **Volumes 3D** avec plancher, plafond et parois verticales
 - **Conversion d'altitudes** : FL, ft AMSL, ft ASFC, SFC, UNL
 - **Normalisation des noms** de fichiers selon clé `lk`
 - **Couleur uniforme** : bleu avec 25% d'opacité (KML: 40ff0000)
 
-### 🔍 Recherche d'entités (`core/search_entities.py`)
+### 🔍 Recherche d'entités (`extraction/list_entities.py`)
 - **Recherche par mots-clés** dans les attributs `lk`
 - **Support multi-sources** : XML-SIA et base SQLite
 - **7 types d'entités** : territoire, aerodrome, espace, partie, volume, service, frequence
 - **Performance optimisée** : <1ms sur SQLite, ~583ms sur XML
 
-### ✅ Validation de cohérence (`schemas/check_coherence.py`)
+### ✅ Validation de cohérence (`validation/check_coherence.py`)
 - **Analyse des relations** `relation(EntityName)` selon spécification SIA
 - **Validation XSD** contre documentation officielle
 - **Détection automatique** des incohérences
@@ -135,19 +138,19 @@ cd xml-sia
 
 ### Extraction XML : TMA Le Bourget (Espace complexe)
 ```bash
-python core/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
+python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
 ```
 **Résultat** : 11 entités extraites (Territoire, Ad, Espace, 2 Parties, 2 Volumes, 3 Services, 2 Fréquences)
 
 ### Génération KML : Volume 3D TMA Le Bourget
 ```bash
-python core/kml_extractor.py --lk "[LF][TMA LE BOURGET]"
+python generate_kml.py --espace-lk "[LF][TMA LE BOURGET]"
 ```
 **Résultat** : Fichier `TMA_LE_BOURGET.kml` avec volume 3D complet
 
 ### Recherche : Espaces TMA disponibles
 ```bash
-python core/search_entities.py --type espace --keyword "TMA"
+python extraction/list_entities.py --type espace --keyword "TMA"
 ```
 **Résultat** : Liste des 943 espaces TMA avec leurs clés `lk`
 
@@ -160,14 +163,14 @@ Ce workflow montre comment traiter un espace aérien de A à Z, depuis la recher
 #### Étape 1 : 🔍 Recherche de l'espace
 ```bash
 # Rechercher "AVORD" dans le XML-SIA pour trouver la clé lk
-python core/search_entities.py -k "AVORD" --source xml --xml-file data-input/XML_SIA_2025-10-02.xml
+python extraction/list_entities.py -k "AVORD" --source xml --xml-file data-input/XML_SIA_2025-10-02.xml
 ```
 **Résultat** : `[LF][TMA AVORD]` (PK: 301113) + `[LF][CTR AVORD]` (PK: 4393)
 
 #### Étape 2 : 📁 Extraction XML avec dépendances
 ```bash
 # Extraire la TMA AVORD avec toutes ses dépendances
-python core/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA AVORD]" --output data-output/TMA_AVORD_extracted.xml --verbose
+python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA AVORD]" --output data-output/TMA_AVORD_extracted.xml --verbose
 ```
 **Résultat** : 51 entités extraites (1 territoire, 1 aérodrome, 1 espace, 3 parties, 3 volumes, 6 services, 36 fréquences)
 
