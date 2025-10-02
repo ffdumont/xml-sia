@@ -11,7 +11,7 @@ Extraire des espaces aériens spécifiques du fichier XML-SIA officiel avec tout
 
 ```
 xml-sia/
-├── kml/                           # Module de génération KML avec couleurs OACI
+├── generate_kml/                  # Module de génération KML avec couleurs OACI
 │   ├── extractor.py              # Extraction KML 3D des volumes aériens
 │   └── color_service.py          # Service de couleurs selon standards OACI
 ├── extraction/                    # Module d'extraction et recherche
@@ -75,7 +75,7 @@ python utils/schema_generator.py --xsd data-input/schemas/Espace.xsd --database 
 python utils/xml_importer.py --xml data-output/TMA_AVORD.xml --database tma_avord.db
 
 # 4. Générer KML 3D avec couleurs OACI
-python generate_kml.py --espace-lk "[LF][TMA AVORD]" --database tma_avord.db --output data-output/kml/TMA_AVORD.kml
+python generate_kml/generate_kml.py --espace-lk "[LF][TMA AVORD]" --database tma_avord.db --output data-output/kml/TMA_AVORD.kml
 ```
 
 ### Validation de cohérence
@@ -93,7 +93,7 @@ python validation/check_coherence.py
 - **Formatage XML** optimisé (réduction 57% des lignes vides)
 - **Support complet** : TMA, CTR, espaces complexes
 
-### 🗺️ Génération KML 3D (`generate_kml.py` avec `kml/extractor.py`)
+### 🗺️ Génération KML 3D (`generate_kml/generate_kml.py`)
 - **Volumes 3D** avec plancher, plafond et parois verticales
 - **Conversion d'altitudes** : FL, ft AMSL, ft ASFC, SFC, UNL
 - **Normalisation des noms** de fichiers selon clé `lk`
@@ -144,7 +144,7 @@ python extraction/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --
 
 ### Génération KML : Volume 3D TMA Le Bourget
 ```bash
-python generate_kml.py --espace-lk "[LF][TMA LE BOURGET]"
+python generate_kml/generate_kml.py --espace-lk "[LF][TMA LE BOURGET]"
 ```
 **Résultat** : Fichier `TMA_LE_BOURGET.kml` avec volume 3D complet
 

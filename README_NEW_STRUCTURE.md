@@ -57,8 +57,8 @@ python generate_kml.py --espace-pk 304333 --output espace.kml
 
 ```python
 # Module KML - Génération avec couleurs OACI
-from kml.extractor import KMLExtractor
-from kml.color_service import get_space_color
+from generate_kml.extractor import KMLExtractor
+from generate_kml.color_service import get_space_color
 
 extractor = KMLExtractor("database/sia_database.db")
 color = get_space_color("TMA", "D")  # Retourne bleu foncé selon OACI
@@ -95,7 +95,7 @@ Configuration dans `config/color_rules.csv` avec encodage Latin-1.
 
 ## 📋 Migration depuis l'ancienne structure
 
-- `core/kml_extractor.py` → `kml/extractor.py`
+- `core/kml_extractor.py` → `generate_kml/extractor.py`
 - `core/color_service.py` → `kml/color_service.py`  
 - `core/search_entities.py` → `extraction/search_entities.py`
 - `tools/extract_espace.py` → `extraction/extract_espace.py` (version consolidée)
@@ -104,5 +104,5 @@ Configuration dans `config/color_rules.csv` avec encodage Latin-1.
 Les anciens scripts fonctionnent avec les nouveaux imports :
 ```python
 # Ancien : from core.kml_extractor import KMLExtractor
-# Nouveau : from kml.extractor import KMLExtractor
+# Nouveau : from generate_kml.extractor import KMLExtractor
 ```

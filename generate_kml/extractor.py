@@ -18,7 +18,7 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 # Import du service de couleurs
-from .color_service import get_space_color
+from color_service import get_space_color
 
 class KMLExtractor:
     """

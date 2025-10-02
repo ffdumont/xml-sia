@@ -10,7 +10,7 @@ Ce module contient les outils pour générer des fichiers KML à partir des espa
 ## Usage
 
 ```python
-from kml.extractor import KMLExtractor
+from extractor import KMLExtractor
 from kml.color_service import get_space_color
 
 # Extraction KML

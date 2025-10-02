@@ -9,7 +9,7 @@ Usage:
 
 import argparse
 import sys
-from kml.extractor import KMLExtractor
+from extractor import KMLExtractor
 
 def main():
     parser = argparse.ArgumentParser(
