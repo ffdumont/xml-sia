@@ -27,7 +27,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'generate_kml'))
 from list_entities import EntitySearchService, SearchResult
 from extract_espace import XsdBasedEspaceExtractor
 from xml_importer import XMLImporter
-from enhanced_extractor import EnhancedKMLExtractor
+from extractor import KMLExtractor
+from google_earth_export import GoogleEarthExporter, launch_google_earth_pro
 
 class WorkflowEspace:
     """
@@ -40,12 +41,15 @@ class WorkflowEspace:
         self.xml_source = xml_source
         self.search_service = EntitySearchService(database_path, xml_source)
         self.processed_spaces = []
+        self.selected_spaces = []
+        self.launch_google_earth = False
         
     def search_spaces(self, keyword: str) -> List[SearchResult]:
         """
-        Recherche les espaces par mot-clé avec logique en cascade :
-        1. Cherche d'abord dans la base de données
-        2. Si pas trouvé, cherche dans le XML source
+        Recherche les espaces par mot-clé dans les deux sources :
+        1. Cherche dans la base de données
+        2. Cherche dans le XML source
+        3. Combine les résultats en évitant les doublons
         
         Args:
             keyword: Mot-clé de recherche
@@ -55,23 +59,38 @@ class WorkflowEspace:
         """
         print(f"🔍 Recherche des espaces avec le mot-clé '{keyword}'...")
         
-        # 1. Recherche dans la base de données d'abord
+        all_spaces = []
+        
+        # 1. Recherche dans la base de données
         print("  📊 Recherche dans la base de données...")
         db_results = self.search_service.search_in_database(keyword)
         db_spaces = [r for r in db_results if r.entity_type == 'espace']
         
         if db_spaces:
             print(f"  ✅ {len(db_spaces)} espace(s) trouvé(s) dans la base")
-            return db_spaces
+            all_spaces.extend(db_spaces)
         
-        # 2. Si pas trouvé, recherche dans le XML source
-        print("  📄 Aucun résultat en base, recherche dans le XML source...")
+        # 2. Recherche dans le XML source (toujours, même si on a trouvé en base)
+        print("  📄 Recherche dans le XML source...")
         xml_results = self.search_service.search_in_xml(keyword)
         xml_spaces = [r for r in xml_results if r.entity_type == 'espace']
         
         if xml_spaces:
             print(f"  ✅ {len(xml_spaces)} espace(s) trouvé(s) dans le XML")
-            return xml_spaces
+            
+            # Éviter les doublons en comparant les clés lk
+            existing_lks = {space.lk for space in all_spaces}
+            for xml_space in xml_spaces:
+                if xml_space.lk not in existing_lks:
+                    all_spaces.append(xml_space)
+                    
+        if all_spaces:
+            total_count = len(all_spaces)
+            db_count = len(db_spaces) if db_spaces else 0
+            xml_count = len(xml_spaces) if xml_spaces else 0
+            unique_count = total_count
+            print(f"  📊 Total: {unique_count} espace(s) unique(s) (base: {db_count}, XML: {xml_count})")
+            return all_spaces
         
         print(f"  ❌ Aucun espace trouvé avec le mot-clé '{keyword}' (ni en base ni dans le XML)")
         return []
@@ -258,28 +277,14 @@ class WorkflowEspace:
             print(f"  🗺️  Génération KML pour {space_lk}...")
             
             # Créer l'extracteur KML avec cache
-            kml_extractor = EnhancedKMLExtractor(self.database_path)
+            kml_extractor = KMLExtractor(self.database_path)
             
             if not kml_extractor.connect_database():
                 print(f"  ❌ Impossible de se connecter à la base")
                 return False
             
-            # Générer le KML avec cache par volume
-            if use_cache:
-                kml_content = kml_extractor.extract_airspace_kml_cached(space_lk, force_regenerate=False)
-            else:
-                # Mode legacy sans cache
-                airspace = kml_extractor.get_airspace_by_lk(space_lk)
-                if not airspace:
-                    print(f"  ❌ Espace non trouvé en base: {space_lk}")
-                    return False
-                
-                volumes = kml_extractor.get_volumes_for_airspace(airspace['pk'])
-                if not volumes:
-                    print(f"  ⚠️  Aucun volume trouvé pour l'espace")
-                    return False
-                
-                kml_content = kml_extractor.create_kml_document(airspace, volumes)
+            # Générer le contenu KML
+            kml_content = kml_extractor.get_airspace_kml_content(lk=space_lk)
             
             if not kml_content:
                 print(f"  ❌ Impossible de générer le KML")
@@ -301,19 +306,67 @@ class WorkflowEspace:
             file_size = len(kml_content.encode('utf-8'))
             print(f"  ✅ KML généré: {kml_path} ({file_size:,} octets)")
             
-            # Afficher les statistiques de cache
-            if use_cache:
-                stats = kml_extractor.get_cache_statistics()
-                session_stats = stats.get('session_stats', {})
-                if session_stats.get('volumes_processed', 0) > 0:
-                    cache_ratio = (session_stats.get('cache_hits', 0) / session_stats['volumes_processed']) * 100
-                    print(f"  📊 Cache: {session_stats.get('cache_hits', 0)}/{session_stats['volumes_processed']} hits ({cache_ratio:.1f}%)")
+            # Statistiques de génération (système de cache non applicable avec le nouvel extracteur)
             
             kml_extractor.close_connection()
             return True
             
         except Exception as e:
             print(f"  ❌ Erreur génération KML: {e}")
+            return False
+    
+    def generate_consolidated_export(self) -> bool:
+        """
+        Génère un fichier d'export consolidé avec tous les espaces de la base
+        
+        Returns:
+            True si succès, False sinon
+        """
+        print(f"\n📦 Génération de l'export consolidé SIA...")
+        print("================================================================================")
+        
+        try:
+            # Créer l'exporteur Google Earth
+            exporter = GoogleEarthExporter(self.database_path)
+            if not exporter.connect():
+                print("❌ Impossible de se connecter à la base pour l'export consolidé")
+                return False
+            
+            # Chemin de sortie
+            output_path = "data-output/sia_export.kml"
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            
+            # Export automatique de tous les espaces disponibles
+            print("🔄 Export automatique de tous les espaces disponibles en base...")
+            success = exporter._export_all_spaces_standard(output_path)
+            
+            if success:
+                # Vérifier la taille du fichier
+                if os.path.exists(output_path):
+                    file_size = os.path.getsize(output_path)
+                    print(f"✅ Export consolidé généré: {output_path} ({file_size:,} octets)")
+                    print(f"📊 Tous les espaces de la base inclus dans l'export")
+                    
+                    # Lancer Google Earth Pro si demandé
+                    if self.launch_google_earth:
+                        print(f"\n🚀 Lancement de Google Earth Pro...")
+                        full_path = os.path.abspath(output_path)
+                        if launch_google_earth_pro(full_path):
+                            print(f"✅ Google Earth Pro lancé avec {output_path}")
+                        else:
+                            print("⚠️ Impossible de lancer Google Earth Pro")
+                            
+                else:
+                    print("❌ Fichier d'export non créé")
+                    success = False
+            else:
+                print("❌ Échec de la génération de l'export consolidé")
+            
+            exporter.close()
+            return success
+            
+        except Exception as e:
+            print(f"❌ Erreur lors de l'export consolidé: {e}")
             return False
     
     def process_selected_spaces(self, selected_spaces: List[SearchResult]) -> bool:
@@ -403,6 +456,9 @@ class WorkflowEspace:
         if not selected_spaces:
             return False
         
+        # Stocker les espaces sélectionnés pour l'export consolidé
+        self.selected_spaces = selected_spaces
+        
         # 3. Traitement (extraction + import)
         if not self.process_selected_spaces(selected_spaces):
             print("❌ Aucun espace traité avec succès")
@@ -412,6 +468,10 @@ class WorkflowEspace:
         if not self.generate_all_kml():
             print("❌ Aucun KML généré")
             return False
+        
+        # 5. Génération du fichier d'export consolidé
+        if not self.generate_consolidated_export():
+            print("⚠️ Échec de la génération du fichier d'export consolidé")
         
         print("\n🎉 Workflow terminé avec succès!")
         return True
@@ -425,6 +485,7 @@ Exemples:
   python workflow_espace.py --keyword "CHEVREUSE"
   python workflow_espace.py --keyword "BOURGET" --no-cache
   python workflow_espace.py --keyword "PARIS" --xml-source "data-input/XML_SIA_2025-10-02.xml"
+  python workflow_espace.py --keyword "AVORD" --launch
 
 Le workflow recherche automatiquement :
   1. D'abord dans la base de données
@@ -442,6 +503,8 @@ Le workflow recherche automatiquement :
                        help='Fichier XML source (défaut: data-input/XML_SIA_2025-10-02.xml)')
     parser.add_argument('--no-cache', action='store_true',
                        help='Désactiver le cache KML par volume (mode legacy)')
+    parser.add_argument('--launch', action='store_true',
+                       help='Lancer Google Earth Pro avec le fichier d\'export consolidé')
     
     args = parser.parse_args()
     
@@ -457,6 +520,7 @@ Le workflow recherche automatiquement :
     # Créer et exécuter le workflow
     workflow = WorkflowEspace(args.database, args.xml_source)
     workflow.use_cache = not args.no_cache  # Configurer l'usage du cache
+    workflow.launch_google_earth = args.launch  # Configurer le lancement de Google Earth
     
     try:
         success = workflow.run_workflow(args.keyword)

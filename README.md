@@ -187,7 +187,7 @@ python utils/xml_importer.py --xml data-output/TMA_AVORD_extracted.xml --databas
 #### Étape 4 : 🗺️ Génération du volume KML 3D
 ```bash
 # Générer le KML 3D de la TMA AVORD
-python core/kml_extractor.py --espace-lk "[LF][TMA AVORD]" --database sia_database_avord.db --output data-output/kml/TMA_AVORD.kml
+python generate_kml/extractor.py --espace-lk "[LF][TMA AVORD]" --database sia_database_avord.db --output data-output/kml/TMA_AVORD.kml
 ```
 **Résultat** : Fichier `TMA_AVORD.kml` avec volume 3D (plancher + plafond + parois verticales)
 

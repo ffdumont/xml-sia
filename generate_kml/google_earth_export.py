@@ -7,16 +7,66 @@ Permet l'export flexible d'espaces aériens selon différents critères
 import argparse
 import sys
 import os
+import subprocess
 from typing import List, Optional
 
 # Import des services
 sys.path.insert(0, os.path.dirname(__file__))
-from enhanced_extractor import EnhancedKMLExtractor
+from extractor import KMLExtractor
+
+def launch_google_earth_pro(kml_file_path: str) -> bool:
+    """
+    Lance Google Earth Pro avec le fichier KML spécifié
+    
+    Args:
+        kml_file_path: Chemin vers le fichier KML à ouvrir
+        
+    Returns:
+        True si le lancement a réussi, False sinon
+    """
+    # Emplacements possibles de Google Earth Pro
+    possible_paths = [
+        r"C:\Program Files\Google\Google Earth Pro\client\googleearth.exe",
+        r"C:\Program Files (x86)\Google\Google Earth Pro\client\googleearth.exe",
+        r"C:\Program Files\Google\Google Earth Pro\googleearth.exe",
+        r"C:\Program Files (x86)\Google\Google Earth Pro\googleearth.exe"
+    ]
+    
+    # Trouver Google Earth Pro
+    google_earth_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            google_earth_path = path
+            break
+    
+    if not google_earth_path:
+        print("❌ Google Earth Pro non trouvé dans les emplacements habituels:")
+        for path in possible_paths:
+            print(f"   - {path}")
+        print("   Veuillez vérifier l'installation de Google Earth Pro")
+        return False
+    
+    # Vérifier que le fichier KML existe
+    if not os.path.exists(kml_file_path):
+        print(f"❌ Fichier KML non trouvé: {kml_file_path}")
+        return False
+    
+    try:
+        # Lancer Google Earth Pro avec le fichier KML
+        print(f"🚀 Lancement de Google Earth Pro avec: {kml_file_path}")
+        print(f"   Utilisation de: {google_earth_path}")
+        subprocess.Popen([google_earth_path, kml_file_path], shell=False)
+        return True
+    except Exception as e:
+        print(f"❌ Erreur lors du lancement de Google Earth Pro: {e}")
+        return False
+
 
 class GoogleEarthExporter:
     """
     Exporteur KML spécialisé pour Google Earth
     Propose différents modes d'export selon les besoins
+    NOUVEAU: Utilise les extracteurs améliorés avec parties visibles
     """
     
     def __init__(self, database_path: str = 'sia_database.db'):
@@ -25,7 +75,8 @@ class GoogleEarthExporter:
     
     def connect(self) -> bool:
         """Initialise la connexion à la base et au cache"""
-        self.extractor = EnhancedKMLExtractor(self.database_path)
+        print("✨ Utilisation de l'extracteur KML (parties visibles)")
+        self.extractor = KMLExtractor(self.database_path)
         return self.extractor.connect_database()
     
     def close(self):
@@ -48,12 +99,8 @@ class GoogleEarthExporter:
         """
         print(f"📤 Export espace individuel: {espace_lk}")
         
-        kml_content = self.extractor.extract_airspace_kml_cached(espace_lk, force_regenerate)
-        if not kml_content:
-            print(f"❌ Impossible de générer le KML pour {espace_lk}")
-            return False
-        
-        return self._save_kml(kml_content, output_path)
+        # Utiliser l'extracteur amélioré
+        return self.extractor.extract_airspace_to_kml(lk=espace_lk, output_file=output_path)
     
     def export_multiple_airspaces(self, espace_lks: List[str], output_path: str,
                                  output_name: str = "Espaces combinés",
@@ -72,15 +119,8 @@ class GoogleEarthExporter:
         """
         print(f"📤 Export multi-espaces: {len(espace_lks)} espace(s)")
         
-        kml_content = self.extractor.export_multiple_airspaces(
-            espace_lks, output_name, force_regenerate
-        )
-        
-        if not kml_content:
-            print("❌ Impossible de générer le KML combiné")
-            return False
-        
-        return self._save_kml(kml_content, output_path)
+        # Utiliser l'extracteur amélioré avec KML combiné
+        return self._create_combined_kml(espace_lks, output_path, output_name)
     
     def export_by_region(self, region_keywords: List[str], output_path: str,
                         classe: str = None, force_regenerate: bool = False) -> bool:
@@ -409,6 +449,321 @@ class GoogleEarthExporter:
         except Exception as e:
             print(f"❌ Erreur lors de la recherche: {e}")
             return False
+    
+    def _export_all_spaces_standard(self, output_path: str) -> bool:
+        """
+        Export automatique de tous les espaces avec l'extracteur amélioré
+        """
+        try:
+            cursor = self.extractor.db_connection.cursor()
+            cursor.execute("SELECT lk FROM espaces ORDER BY lk")  # Export de tous les espaces
+            espace_lks = [row[0] for row in cursor.fetchall()]
+            
+            if not espace_lks:
+                print("❌ Aucun espace trouvé dans la base")
+                return False
+            
+            print(f"📤 Export automatique de {len(espace_lks)} espaces")
+            return self.export_multiple_airspaces(espace_lks, output_path, "Export automatique d'espaces aériens", False)
+            
+        except Exception as e:
+            print(f"❌ Erreur export automatique standard: {e}")
+            return False
+    
+
+    
+    def _create_combined_kml(self, espace_lks: List[str], output_path: str, output_name: str) -> bool:
+        """
+        Crée un KML combiné avec l'extracteur amélioré
+        """
+        import xml.etree.ElementTree as ET
+        from xml.dom import minidom
+        
+        try:
+            print(f"🔄 Création du KML combiné avec {len(espace_lks)} espace(s)")
+            
+            # Créer la structure KML de base
+            kml = ET.Element('kml')
+            kml.set('xmlns', 'http://www.opengis.net/kml/2.2')
+            
+            document = ET.SubElement(kml, 'Document')
+            
+            # Nom et description du document
+            name = ET.SubElement(document, 'name')
+            name.text = output_name
+            
+            description = ET.SubElement(document, 'description')
+            desc_text = f"""
+            Export combiné de {len(espace_lks)} espace(s) aérien(s)
+            Généré avec l'extracteur amélioré (parties visibles)
+            Espaces inclus:
+            """
+            for i, lk in enumerate(espace_lks, 1):
+                desc_text += f"\n  {i}. {lk}"
+            
+            description.text = desc_text.strip()
+            
+            # Traiter chaque espace directement dans le document (sans dossier intermédiaire)
+            for espace_lk in espace_lks:
+                print(f"   📋 Traitement de {espace_lk}...")
+                
+                try:
+                    # Récupérer l'espace
+                    airspace = self.extractor.get_airspace_by_lk(espace_lk)
+                    if not airspace:
+                        print(f"      ⚠️ Espace non trouvé: {espace_lk}")
+                        continue
+                    
+                    # Récupérer les parties
+                    parts = self.extractor.get_parts_for_airspace(airspace['pk'])
+                    if not parts:
+                        print(f"      ⚠️ Aucune partie trouvée pour: {espace_lk}")
+                        continue
+                    
+                    # Ajouter les styles spécifiques à cet espace
+                    self._add_space_specific_styles(document, airspace, parts)
+                    
+                    # Créer un dossier pour cet espace directement dans le document
+                    space_folder = ET.SubElement(document, 'Folder')
+                    space_folder_name = ET.SubElement(space_folder, 'name')
+                    space_folder_name.text = airspace['lk']  # Utiliser directement le lk
+                    
+                    # Ajouter chaque partie avec le bon style
+                    for part in parts:
+                        self._add_part_to_folder_with_colors(space_folder, part, airspace)
+                    
+                    print(f"      ✅ {len(parts)} partie(s) ajoutée(s)")
+                    
+                except Exception as e:
+                    print(f"      ❌ Erreur traitement {espace_lk}: {str(e)[:50]}...")
+                    continue
+            
+            # Convertir en chaîne XML formatée
+            rough_string = ET.tostring(kml, encoding='unicode')
+            reparsed = minidom.parseString(rough_string)
+            kml_content = reparsed.toprettyxml(indent='  ')
+            
+            # Sauvegarder
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(kml_content)
+            
+            file_size = len(kml_content.encode('utf-8'))
+            print(f"✅ KML combiné sauvegardé: {output_path} ({file_size:,} octets)")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Erreur création KML combiné: {e}")
+            return False
+    
+    def _add_space_specific_styles(self, document, airspace, parts):
+        """Ajoute les styles spécifiques à un espace avec les bonnes couleurs"""
+        import xml.etree.ElementTree as ET
+        from color_service import get_space_color
+        
+        # Déterminer la couleur pour ce type d'espace
+        type_espace = airspace['type_espace']
+        
+        # Trouver une classe représentative
+        classe = None
+        for part in parts:
+            for volume in part['volumes']:
+                if volume['classe']:
+                    classe = volume['classe']
+                    break
+            if classe:
+                break
+        
+        # Obtenir la couleur spécifique
+        base_color = get_space_color(type_espace, classe, 'kml')
+        
+        # Style unique pour cet espace
+        style_id = f'volumeStyle_{airspace["pk"]}'
+        
+        # Vérifier si le style existe déjà
+        existing_style = document.find(f'.//Style[@id="{style_id}"]')
+        if existing_style is not None:
+            return  # Style déjà ajouté
+        
+        # Style principal pour les volumes extrudés
+        main_style = ET.SubElement(document, 'Style')
+        main_style.set('id', style_id)
+        
+        line_style = ET.SubElement(main_style, 'LineStyle')
+        line_color = ET.SubElement(line_style, 'color')
+        line_color.text = f'ff{base_color[2:]}'  # Couleur opaque pour les contours
+        line_width = ET.SubElement(line_style, 'width')
+        line_width.text = '2'
+        
+        poly_style = ET.SubElement(main_style, 'PolyStyle')
+        poly_color = ET.SubElement(poly_style, 'color')
+        poly_color.text = f'80{base_color[2:]}'  # 50% d'opacité
+        poly_fill = ET.SubElement(poly_style, 'fill')
+        poly_fill.text = '1'
+        poly_outline = ET.SubElement(poly_style, 'outline')
+        poly_outline.text = '1'
+    
+    def _add_part_to_folder_with_colors(self, parent_folder, part, airspace):
+        """Ajoute une partie d'espace au dossier parent avec les bonnes couleurs"""
+        import xml.etree.ElementTree as ET
+        import re
+        
+        coordinates = self._parse_contour_coordinates(part['contour'])
+        
+        if not coordinates:
+            return
+        
+        # S'assurer que le polygone est fermé
+        if coordinates and coordinates[0] != coordinates[-1]:
+            coordinates.append(coordinates[0])
+        
+        # Calculer les altitudes
+        min_floor, max_ceiling = self._get_part_altitude_range(part)
+        
+        # Créer directement un placemark avec le lk de la partie (structure simplifiée)
+        volume_placemark = ET.SubElement(parent_folder, 'Placemark')
+        volume_name = ET.SubElement(volume_placemark, 'name')
+        volume_name.text = part['lk']  # Utiliser directement le lk de la partie
+        
+        # Ajouter une description concise pour le mouse over
+        volume_description = ET.SubElement(volume_placemark, 'description')
+        part_name = part['nom_partie'] if part['nom_partie'] and part['nom_partie'] != '.' else f"Partie {part['numero_partie'] or 'principale'}"
+        
+        # Convertir les altitudes en pieds pour l'affichage (standard aéronautique)
+        min_floor_ft = int(min_floor * 3.28084)  # mètres vers pieds
+        max_ceiling_ft = int(max_ceiling * 3.28084)
+        
+        desc_lines = [
+            f"Partie: {part_name}",
+            f"Plancher: {min_floor_ft} ft ({min_floor:.0f} m)",
+            f"Plafond: {max_ceiling_ft} ft ({max_ceiling:.0f} m)"
+        ]
+        volume_description.text = '\n'.join(desc_lines)
+        
+        # Référencer le style spécifique à cet espace
+        volume_style_url = ET.SubElement(volume_placemark, 'styleUrl')
+        volume_style_url.text = f'#volumeStyle_{airspace["pk"]}'
+        
+        volume_polygon = ET.SubElement(volume_placemark, 'Polygon')
+        volume_extrude = ET.SubElement(volume_polygon, 'extrude')
+        volume_extrude.text = '1'
+        
+        volume_altitude_mode = ET.SubElement(volume_polygon, 'altitudeMode')
+        volume_altitude_mode.text = 'absolute'
+        
+        volume_outer = ET.SubElement(volume_polygon, 'outerBoundaryIs')
+        volume_ring = ET.SubElement(volume_outer, 'LinearRing')
+        volume_coords = ET.SubElement(volume_ring, 'coordinates')
+        
+        volume_coord_strings = []
+        for lat, lon in coordinates:
+            volume_coord_strings.append(f"{lon},{lat},{max_ceiling}")
+        volume_coords.text = ' '.join(volume_coord_strings)
+    
+    def _add_part_to_folder(self, parent_folder, part, airspace):
+        """Méthode legacy - utilise la nouvelle méthode avec couleurs"""
+        return self._add_part_to_folder_with_colors(parent_folder, part, airspace)
+    
+    def _parse_contour_coordinates(self, contour: str):
+        """Parse les coordonnées depuis le champ 'contour'"""
+        import re
+        
+        coordinates = []
+        
+        if not contour:
+            return coordinates
+        
+        lines = contour.strip().split('\n')
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            
+            coord_pattern = r'(\d+\.?\d*)\s+(\d+\.?\d*)'
+            matches = re.findall(coord_pattern, line)
+            
+            for match in matches:
+                try:
+                    lat = float(match[0])
+                    lon = float(match[1])
+                    if 40 <= lat <= 55 and -10 <= lon <= 10:
+                        coordinates.append((lat, lon))
+                        break
+                except ValueError:
+                    continue
+        
+        return coordinates
+    
+    def _get_part_altitude_range(self, part):
+        """Calcule la plage d'altitude pour une partie"""
+        if not part['volumes']:
+            return 0.0, 1000.0
+        
+        surface_elevation = 0.0
+        min_floor = float('inf')
+        max_ceiling = float('-inf')
+        
+        for volume in part['volumes']:
+            floor_alt = self._parse_altitude_to_meters(
+                volume['plancher'], 
+                volume['plancher_ref_unite'], 
+                is_ceiling=False, 
+                surface_elevation=surface_elevation
+            )
+            ceiling_alt = self._parse_altitude_to_meters(
+                volume['plafond'], 
+                volume['plafond_ref_unite'], 
+                is_ceiling=True, 
+                surface_elevation=surface_elevation
+            )
+            
+            min_floor = min(min_floor, floor_alt)
+            max_ceiling = max(max_ceiling, ceiling_alt)
+        
+        return min_floor if min_floor != float('inf') else 0.0, max_ceiling if max_ceiling != float('-inf') else 1000.0
+    
+    def _parse_altitude_to_meters(self, altitude: str, ref_unite: str, is_ceiling: bool = True, surface_elevation: float = 0.0) -> float:
+        """Convertit une altitude en mètres"""
+        import re
+        
+        if not ref_unite:
+            return 0.0
+        
+        try:
+            if ref_unite == "SFC":
+                return surface_elevation
+            elif ref_unite == "UNL":
+                if is_ceiling:
+                    return 19500 * 0.3048
+                else:
+                    return 18000 * 0.3048
+            
+            if isinstance(altitude, str):
+                altitude_clean = re.sub(r'[^\d.]', '', altitude)
+                if not altitude_clean:
+                    return 0.0
+                altitude_val = float(altitude_clean)
+            else:
+                altitude_val = float(altitude)
+            
+            if ref_unite.startswith("FL"):
+                return altitude_val * 100 * 0.3048
+            elif "ft" in ref_unite.lower():
+                if "ASFC" in ref_unite:
+                    return surface_elevation + (altitude_val * 0.3048)
+                else:
+                    return altitude_val * 0.3048
+            elif "m" in ref_unite.lower():
+                if "ASFC" in ref_unite:
+                    return surface_elevation + altitude_val
+                else:
+                    return altitude_val
+            else:
+                return altitude_val * 0.3048
+                
+        except (ValueError, TypeError):
+            return 0.0
 
 def main():
     parser = argparse.ArgumentParser(
@@ -440,6 +795,9 @@ python google_earth_export.py --keyword "BOURGET" --output bourget_spaces.kml
 python google_earth_export.py --space-type TMA --output all_tma.kml
 python google_earth_export.py --space-class D --output class_d_spaces.kml
 python google_earth_export.py --keyword "PARIS" --space-type TMA --max-results 10 --output paris_tma.kml
+
+# Lancement automatique de Google Earth Pro
+python google_earth_export.py --single "[LF][TMA LE BOURGET]" --output bourget.kml --launch
 
 # Affichage des statistiques
 python google_earth_export.py --stats
@@ -486,6 +844,10 @@ python google_earth_export.py --stats
     parser.add_argument('--force', action='store_true',
                        help='Force la régénération du cache')
     
+    # Option pour lancer Google Earth Pro
+    parser.add_argument('--launch', action='store_true',
+                       help='Lancer automatiquement Google Earth Pro avec le fichier KML généré')
+    
     # Filtres additionnels
     parser.add_argument('--alt-min', type=int,
                        help='Altitude minimum en pieds')
@@ -513,7 +875,7 @@ python google_earth_export.py --stats
         # Si l'utilisateur confirme, activer le mode filtrage avancé sans filtres
         using_advanced_filters = True
     
-    # Initialisation
+    # Initialisation de l'exporteur (toujours avec l'extracteur amélioré)
     exporter = GoogleEarthExporter(args.database)
     
     if not exporter.connect():
@@ -560,9 +922,18 @@ python google_earth_export.py --stats
             fl_min, fl_max = args.flight_levels
             success = exporter.export_flight_level_range(fl_min, fl_max, args.output, args.space_class_old)
         
-        # Afficher les statistiques finales
-        if success and not args.stats:
-            exporter.show_statistics()
+        else:
+            # Mode automatique - export de tous les espaces disponibles
+            print("🔄 Aucun critère spécifique - export automatique des espaces disponibles")
+            success = exporter._export_all_spaces_standard(args.output)
+        
+        # Les statistiques ne sont plus nécessaires avec l'extracteur amélioré
+        
+        # Lancer Google Earth Pro si demandé et export réussi
+        if success and args.launch and args.output and not args.stats:
+            # Convertir en chemin absolu si nécessaire
+            output_path = os.path.abspath(args.output)
+            launch_google_earth_pro(output_path)
         
         return 0 if success else 1
         
