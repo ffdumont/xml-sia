@@ -35,9 +35,9 @@ S/CTR;;ffcc6600;#0066CC;Secteur de CTR
 UAC;;ffcc6600;#0066CC;Zone de contrôle supérieure
 UTA;;ffcc6600;#0066CC;Zone de contrôle terminal supérieure
 
-# Espaces d'information (bleu clair)
+# Espaces d'information (bleu clair et vert clair)
 FIR;;ffff9966;#6699FF;Région d'information de vol
-SIV;;ffff9966;#6699FF;Service d'information de vol
+SIV;;ff99ff99;#99FF99;Service d'information de vol - Vert clair
 UIR;;ffff9966;#6699FF;Région supérieure d'information
 
 # Zones spéciales (rouge)

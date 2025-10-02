@@ -12,8 +12,42 @@ import xml.etree.ElementTree as ET
 import argparse
 import sys
 import os
+import re
 from typing import Set, Dict, List, Optional, Tuple
 from xml.dom import minidom
+
+def normalize_filename(lk_identifier: str) -> str:
+    """
+    Normalise un identifiant lk en nom de fichier valide
+    
+    Args:
+        lk_identifier: Identifiant lk (ex: "[LF][TMA LE BOURGET]")
+    
+    Returns:
+        Nom de fichier normalisé (ex: "TMA_LE_BOURGET.xml")
+    """
+    if not lk_identifier:
+        return "espace_extracted.xml"
+    
+    # Supprimer les crochets et garder le contenu
+    filename = lk_identifier.strip('[]')
+    
+    # Séparer par "][" et prendre la dernière partie (généralement le nom de l'espace)
+    parts = filename.split('][')
+    if len(parts) > 1:
+        filename = parts[-1]  # Dernière partie (ex: "TMA LE BOURGET")
+    
+    # Remplacer les espaces par des underscores
+    filename = filename.replace(' ', '_')
+    
+    # Supprimer ou remplacer les caractères non autorisés
+    filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    
+    # Ajouter l'extension .xml
+    if not filename.endswith('.xml'):
+        filename += '.xml'
+    
+    return filename
 
 class XsdBasedEspaceExtractor:
     """
@@ -26,6 +60,7 @@ class XsdBasedEspaceExtractor:
         self.xsd_file = xsd_file_path or os.path.join(os.path.dirname(__file__), '..', 'data-input', 'schemas', 'Espace.xsd')
         self.root = None
         self.namespaces = {}
+        self.target_espace_lk = None  # Identifiant lk de l'espace cible pour le nom de fichier
         
         # Collections des entités extraites (selon structure XSD)
         self.extracted = {
@@ -116,6 +151,7 @@ class XsdBasedEspaceExtractor:
             return False
             
         espace_pk = espace.get('pk')
+        self.target_espace_lk = espace.get('lk', identifier)  # Stocker le lk pour le nom de fichier
         print(f"\n=== Extraction de l'espace pk={espace_pk} ===")
         
         # 2. Ajouter l'espace à la collection
@@ -375,18 +411,25 @@ Exemples d'utilisation:
     # Génération du XML de sortie
     output_xml = extractor.generate_output_xml()
     
-    # Sortie
+    # Déterminer le nom de fichier de sortie
     if args.output:
-        try:
-            with open(args.output, 'w', encoding='iso-8859-1') as f:
-                f.write(output_xml)
-            print(f"\n✓ XML généré: {args.output}")
-        except Exception as e:
-            print(f"✗ Erreur d'écriture: {e}")
-            sys.exit(1)
+        output_filename = args.output
     else:
-        print(f"\n=== XML EXTRAIT ===")
-        print(output_xml)
+        # Générer un nom de fichier normalisé basé sur l'identifiant lk
+        output_filename = normalize_filename(extractor.target_espace_lk)
+        
+        # Placer dans data-output/ si le dossier existe
+        if os.path.exists('data-output'):
+            output_filename = os.path.join('data-output', output_filename)
+    
+    # Écrire le fichier XML
+    try:
+        with open(output_filename, 'w', encoding='iso-8859-1') as f:
+            f.write(output_xml)
+        print(f"\n✓ XML généré: {output_filename}")
+    except Exception as e:
+        print(f"✗ Erreur d'écriture: {e}")
+        sys.exit(1)
     
     # Résumé
     if args.verbose:
