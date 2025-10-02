@@ -22,7 +22,7 @@ Exemple minimal validant la structure du schéma.
 ### Validation manuelle
 ```bash
 # Validation avec xmllint (si disponible)
-xmllint --schema schemas/Espace.xsd data/output/mon_fichier.xml --noout
+xmllint --schema data-input/schemas/Espace.xsd data-output/mon_fichier.xml --noout
 ```
 
 ### Validation automatique

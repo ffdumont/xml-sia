@@ -17,10 +17,12 @@ xml-sia/
 ├── schemas/                       # Schémas XSD et validation
 │   ├── Espace.xsd                # Schéma XSD des espaces
 │   └── test_validation_xsd.xml   # Tests de validation
-├── data/                          # Données d'entrée et sorties
-│   ├── input/                    # Données sources SIA
-│   ├── output/                   # Extractions générées
-│   └── examples/                 # Exemples d'extraction
+├── data-input/                    # Données sources SIA
+│   ├── schemas/                  # Schémas XSD (incluant Espace.xsd)
+│   └── XML_SIA_2025-10-02.xml   # Fichier XML SIA principal
+├── data-output/                   # Extractions générées
+│   ├── schemas/                  # Rapports de validation  
+│   └── inventory/                # Rapports d'inventaire
 ├── docs/                          # Documentation et rapports
 │   ├── README_extract_espace.md  # Guide d'utilisation
 │   ├── COHERENCE_REPORT.md       # Rapport de validation
@@ -34,10 +36,10 @@ xml-sia/
 ### Extraction d'un espace aérien
 ```bash
 # Extraire la TMA Le Bourget avec toutes ses dépendances
-python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
+python tools/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
 
 # Extraire une CTR par pk
-python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "1204" --verbose
+python tools/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "1204" --verbose
 ```
 
 ### Validation de cohérence
@@ -88,13 +90,13 @@ cd xml-sia
 
 ### TMA Le Bourget (Espace complexe)
 ```bash
-python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
+python tools/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
 ```
 **Résultat** : 11 entités extraites (Territoire, Ad, Espace, 2 Parties, 2 Volumes, 3 Services, 2 Fréquences)
 
 ### CTR Pontoise (Espace simple)
 ```bash
-python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][CTR PONTOISE]"
+python tools/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][CTR PONTOISE]"
 ```
 **Résultat** : 11 entités extraites avec relations CTR ↔ Aérodrome
 

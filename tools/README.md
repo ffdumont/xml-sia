@@ -8,7 +8,7 @@ Ce dossier contient les outils d'extraction et de validation pour les données X
 **Outil d'extraction d'espaces aériens avec résolution de dépendances**
 
 ```bash
-python extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
+python extract_espace.py --input ../data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]" --verbose
 ```
 
 **Fonctionnalités** :
@@ -43,7 +43,7 @@ Les scripts sont conçus pour être exécutés depuis la racine du projet :
 
 ```bash
 # Extraction
-python tools/extract_espace.py --input data/input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
+python tools/extract_espace.py --input data-input/XML_SIA_2025-10-02.xml --identifier "[LF][TMA LE BOURGET]"
 
 # Validation
 python tools/check_coherence.py
@@ -51,5 +51,5 @@ python tools/check_coherence.py
 
 ## Sortie
 
-- **Extraction** : Fichiers XML dans `data/output/`
+- **Extraction** : Fichiers XML dans `data-output/`
 - **Validation** : Rapports dans `docs/`

@@ -23,7 +23,7 @@ class XsdBasedEspaceExtractor:
     
     def __init__(self, xml_file_path: str, xsd_file_path: str = None):
         self.xml_file = xml_file_path
-        self.xsd_file = xsd_file_path or os.path.join(os.path.dirname(__file__), '..', 'data-input', 'schemas', 'Espace.xsd')
+        self.xsd_file = xsd_file_path or os.path.join(os.path.dirname(__file__), 'output', 'Espace.xsd')
         self.root = None
         self.namespaces = {}
         
@@ -61,8 +61,8 @@ class XsdBasedEspaceExtractor:
                     prefix = key[6:] if ':' in key else ''
                     self.namespaces[prefix] = value
                     
-            print(f"✓ Fichier XML SIA chargé: {self.xml_file}")
-            print(f"✓ Namespaces détectés: {self.namespaces}")
+            print(f"OK Fichier XML SIA charge: {self.xml_file}")
+            print(f"OK Namespaces detectes: {self.namespaces}")
             return True
             
         except ET.ParseError as e:
@@ -84,15 +84,15 @@ class XsdBasedEspaceExtractor:
         for espace in espaces_section.findall('Espace'):
             # Recherche par pk (attribut système obligatoire selon XSD)
             if espace.get('pk') == identifier:
-                print(f"✓ Espace trouvé par pk: {identifier}")
+                print(f"OK Espace trouve par pk: {identifier}")
                 return espace
                 
             # Recherche par lk (attribut système optionnel selon XSD)  
             if espace.get('lk') == identifier:
-                print(f"✓ Espace trouvé par lk: {identifier}")
+                print(f"OK Espace trouve par lk: {identifier}")
                 return espace
         
-        print(f"✗ Espace non trouvé: {identifier}")
+        print(f"ERREUR Espace non trouve: {identifier}")
         return None
     
     def extract_espace_with_dependencies(self, identifier: str) -> bool:
@@ -241,13 +241,10 @@ class XsdBasedEspaceExtractor:
                         print(f"    ✓ Fréquence trouvée: pk={frequence_pk}")
     
     def generate_output_xml(self) -> str:
-        """Génère le XML de sortie conforme au schéma XSD avec formatage propre"""
+        """Génère le XML de sortie sans références de schéma pour éviter les erreurs de validation"""
         
-        # Création de l'élément racine avec namespace SIA
+        # Création de l'élément racine simple
         root = ET.Element('SiaExport')
-        root.set('xmlns:sia', 'http://www.sia.aviation-civile.gouv.fr/siaexport')
-        root.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        root.set('xsi:schemaLocation', 'http://www.sia.aviation-civile.gouv.fr/siaexport Espace.xsd')
         
         # Ajout des sections selon l'ordre logique du schéma XSD
         
@@ -348,7 +345,7 @@ Exemples d'utilisation:
     parser.add_argument('--output', '-o',
                        help='Fichier XML de sortie (optionnel, affichage sur stdout par défaut)')
     parser.add_argument('--xsd',
-                       help='Fichier XSD de validation (par défaut: schemas/Espace.xsd)')
+                       help='Fichier XSD de validation (par défaut: output/Espace.xsd)')
     parser.add_argument('--verbose', '-v', action='store_true',
                        help='Mode verbose')
     
