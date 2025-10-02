@@ -321,6 +321,8 @@ class KMLExtractor:
                 surface_elevation=surface_elevation
             )
             
+
+            
             # Créer un dossier pour ce volume
             volume_folder = ET.SubElement(folder, 'Folder')
             vol_folder_name = ET.SubElement(volume_folder, 'name')
