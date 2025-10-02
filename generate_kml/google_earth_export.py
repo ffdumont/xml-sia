@@ -564,15 +564,24 @@ class GoogleEarthExporter:
         # Déterminer la couleur pour ce type d'espace
         type_espace = airspace['type_espace']
         
-        # Trouver une classe représentative
+        # Trouver une classe représentative - privilégier la classe A
         classe = None
+        classes_found = set()
         for part in parts:
             for volume in part['volumes']:
                 if volume['classe']:
-                    classe = volume['classe']
-                    break
-            if classe:
+                    classes_found.add(volume['classe'])
+        
+        # Ordre de priorité : A > B > C > D > E > autres
+        priority_order = ['A', 'B', 'C', 'D', 'E']
+        for priority_class in priority_order:
+            if priority_class in classes_found:
+                classe = priority_class
                 break
+        
+        # Si aucune classe prioritaire, prendre la première trouvée
+        if not classe and classes_found:
+            classe = list(classes_found)[0]
         
         # Obtenir la couleur spécifique
         base_color = get_space_color(type_espace, classe, 'kml')
@@ -625,7 +634,7 @@ class GoogleEarthExporter:
         volume_name = ET.SubElement(volume_placemark, 'name')
         volume_name.text = part['lk']  # Utiliser directement le lk de la partie
         
-        # Ajouter une description concise pour le mouse over
+        # Ajouter une description enrichie pour le mouse over
         volume_description = ET.SubElement(volume_placemark, 'description')
         part_name = part['nom_partie'] if part['nom_partie'] and part['nom_partie'] != '.' else f"Partie {part['numero_partie'] or 'principale'}"
         
@@ -633,8 +642,36 @@ class GoogleEarthExporter:
         min_floor_ft = int(min_floor * 3.28084)  # mètres vers pieds
         max_ceiling_ft = int(max_ceiling * 3.28084)
         
+        # Récupérer les classes des volumes de cette partie
+        volume_classes = set()
+        for volume in part['volumes']:
+            if volume['classe']:
+                volume_classes.add(volume['classe'])
+        
+        classes_text = ', '.join(sorted(volume_classes)) if volume_classes else 'Non spécifiée'
+        type_espace = airspace['type_espace']
+        
+        # Déterminer la classe dominante de l'espace entier (pour cohérence)
+        espace_classes = set()
+        for p in [part]:  # On pourrait passer toutes les parties, mais on a seulement celle-ci ici
+            for vol in p['volumes']:
+                if vol['classe']:
+                    espace_classes.add(vol['classe'])
+        
+        # Classe dominante (privilégier A)
+        classe_dominante = None
+        priority_order = ['A', 'B', 'C', 'D', 'E']
+        for priority_class in priority_order:
+            if priority_class in espace_classes:
+                classe_dominante = priority_class
+                break
+        if not classe_dominante and espace_classes:
+            classe_dominante = list(espace_classes)[0]
+        
         desc_lines = [
+            f"Espace: {type_espace} (classe dominante: {classe_dominante or 'N/A'})",
             f"Partie: {part_name}",
+            f"Classes de cette partie: {classes_text}",
             f"Plancher: {min_floor_ft} ft ({min_floor:.0f} m)",
             f"Plafond: {max_ceiling_ft} ft ({max_ceiling:.0f} m)"
         ]

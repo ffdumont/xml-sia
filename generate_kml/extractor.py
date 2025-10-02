@@ -289,15 +289,24 @@ class KMLExtractor:
         # Déterminer la couleur de base
         type_espace = airspace['type_espace']
         
-        # Trouver une classe représentative
+        # Trouver une classe représentative - privilégier la classe A
         classe = None
+        classes_found = set()
         for part in parts:
             for volume in part['volumes']:
                 if volume['classe']:
-                    classe = volume['classe']
-                    break
-            if classe:
+                    classes_found.add(volume['classe'])
+        
+        # Ordre de priorité : A > B > C > D > E > autres
+        priority_order = ['A', 'B', 'C', 'D', 'E']
+        for priority_class in priority_order:
+            if priority_class in classes_found:
+                classe = priority_class
                 break
+        
+        # Si aucune classe prioritaire, prendre la première trouvée
+        if not classe and classes_found:
+            classe = list(classes_found)[0]
         
         base_color = get_space_color(type_espace, classe, 'kml')
         
@@ -363,8 +372,18 @@ class KMLExtractor:
             min_floor_ft = int(min_floor * 3.28084)  # mètres vers pieds
             max_ceiling_ft = int(max_ceiling * 3.28084)
             
+            # Récupérer les classes des volumes de cette partie
+            volume_classes = set()
+            for volume in part['volumes']:
+                if volume['classe']:
+                    volume_classes.add(volume['classe'])
+            
+            classes_text = ', '.join(sorted(volume_classes)) if volume_classes else 'Non spécifiée'
+            
             desc_lines = [
+                f"Espace: {type_espace} (classe dominante: {classe or 'N/A'})",
                 f"Partie: {part_name}",
+                f"Classes de cette partie: {classes_text}",
                 f"Plancher: {min_floor_ft} ft ({min_floor:.0f} m)",
                 f"Plafond: {max_ceiling_ft} ft ({max_ceiling:.0f} m)"
             ]
