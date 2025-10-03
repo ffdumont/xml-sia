@@ -36,9 +36,11 @@ class WorkflowEspace:
     """
     
     def __init__(self, database_path: str = 'sia_database.db', 
-                 xml_source: str = 'data-input/XML_SIA_2025-10-02.xml'):
+                 xml_source: str = 'data-input/XML_SIA_2025-10-02.xml',
+                 altitude_max: int = None):
         self.database_path = database_path
         self.xml_source = xml_source
+        self.altitude_max = altitude_max
         self.search_service = EntitySearchService(database_path, xml_source)
         self.processed_spaces = []
         self.selected_spaces = []
@@ -94,6 +96,76 @@ class WorkflowEspace:
         
         print(f"  ❌ Aucun espace trouvé avec le mot-clé '{keyword}' (ni en base ni dans le XML)")
         return []
+
+    def filter_spaces_by_altitude(self, spaces: List[SearchResult]) -> List[SearchResult]:
+        """
+        Filtre les espaces selon le critère d'altitude maximale
+        
+        Args:
+            spaces: Liste des espaces à filtrer
+            
+        Returns:
+            Liste des espaces dont le plancher minimal est < altitude_max
+        """
+        if self.altitude_max is None:
+            return spaces
+        
+        print(f"🔽 Filtrage par altitude (plancher < {self.altitude_max} ft)...")
+        
+        filtered_spaces = []
+        
+        try:
+            import sqlite3
+            conn = sqlite3.connect(self.database_path)
+            cursor = conn.cursor()
+            
+            for space in spaces:
+                # Requête pour obtenir le plancher minimal de l'espace
+                query = """
+                SELECT MIN(
+                    CASE 
+                        WHEN v.plancher_ref_unite LIKE '%FL%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                        THEN CAST(v.plancher AS INTEGER) * 100
+                        WHEN v.plancher_ref_unite LIKE '%ft%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                        THEN CAST(v.plancher AS INTEGER)
+                        WHEN v.plancher_ref_unite LIKE '%m%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                        THEN CAST(v.plancher AS INTEGER) * 3.28084
+                        WHEN v.plancher = 'SFC' OR v.plancher = 'GND'
+                        THEN 0
+                        ELSE 0
+                    END
+                ) as min_plancher_ft
+                FROM volumes v
+                JOIN parties p ON v.partie_ref = p.pk
+                WHERE p.espace_ref = ?
+                """
+                
+                cursor.execute(query, (space.pk,))
+                result = cursor.fetchone()
+                
+                if result and result[0] is not None:
+                    min_plancher = result[0]
+                    if min_plancher < self.altitude_max:
+                        filtered_spaces.append(space)
+                else:
+                    # Si pas de données d'altitude, on inclut l'espace par défaut
+                    filtered_spaces.append(space)
+            
+            conn.close()
+            
+            excluded_count = len(spaces) - len(filtered_spaces)
+            if excluded_count > 0:
+                print(f"  📊 {excluded_count} espace(s) exclu(s) (plancher >= {self.altitude_max} ft)")
+                print(f"  ✅ {len(filtered_spaces)} espace(s) conservé(s) (plancher < {self.altitude_max} ft)")
+            else:
+                print(f"  ✅ Tous les espaces conservés (aucun plancher >= {self.altitude_max} ft)")
+            
+            return filtered_spaces
+            
+        except Exception as e:
+            print(f"  ⚠️ Erreur lors du filtrage par altitude: {e}")
+            print(f"  ➤ Conservation de tous les espaces par défaut")
+            return spaces
     
     def display_spaces(self, spaces: List[SearchResult]):
         """Affiche la liste des espaces trouvés"""
@@ -336,16 +408,27 @@ class WorkflowEspace:
             output_path = "data-output/sia_export.kml"
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             
-            # Export automatique de tous les espaces disponibles
-            print("🔄 Export automatique de tous les espaces disponibles en base...")
-            success = exporter._export_all_spaces_standard(output_path)
+            # Export avec filtrage si altitude spécifiée, sinon tous les espaces
+            if self.altitude_max is not None:
+                print(f"🔄 Export avec filtrage par altitude (plancher < {self.altitude_max} ft)...")
+                success = exporter.export_with_filters(
+                    altitude_max=self.altitude_max,
+                    output_path=output_path,
+                    force_regenerate=False
+                )
+            else:
+                print("🔄 Export automatique de tous les espaces disponibles en base...")
+                success = exporter._export_all_spaces_standard(output_path)
             
             if success:
                 # Vérifier la taille du fichier
                 if os.path.exists(output_path):
                     file_size = os.path.getsize(output_path)
                     print(f"✅ Export consolidé généré: {output_path} ({file_size:,} octets)")
-                    print(f"📊 Tous les espaces de la base inclus dans l'export")
+                    if self.altitude_max is not None:
+                        print(f"📊 Espaces avec plancher < {self.altitude_max} ft inclus dans l'export")
+                    else:
+                        print(f"📊 Tous les espaces de la base inclus dans l'export")
                     
                     # Lancer Google Earth Pro si demandé
                     if self.launch_google_earth:
@@ -451,25 +534,31 @@ class WorkflowEspace:
         if not spaces:
             return False
         
-        # 2. Sélection interactive
-        selected_spaces = self.select_spaces(spaces)
+        # 2. Filtrage par altitude si spécifié
+        filtered_spaces = self.filter_spaces_by_altitude(spaces)
+        if not filtered_spaces:
+            print("❌ Aucun espace ne correspond aux critères d'altitude")
+            return False
+        
+        # 3. Sélection interactive
+        selected_spaces = self.select_spaces(filtered_spaces)
         if not selected_spaces:
             return False
         
         # Stocker les espaces sélectionnés pour l'export consolidé
         self.selected_spaces = selected_spaces
         
-        # 3. Traitement (extraction + import)
+        # 4. Traitement (extraction + import)
         if not self.process_selected_spaces(selected_spaces):
             print("❌ Aucun espace traité avec succès")
             return False
         
-        # 4. Génération KML
+        # 5. Génération KML
         if not self.generate_all_kml():
             print("❌ Aucun KML généré")
             return False
         
-        # 5. Génération du fichier d'export consolidé
+        # 6. Génération du fichier d'export consolidé
         if not self.generate_consolidated_export():
             print("⚠️ Échec de la génération du fichier d'export consolidé")
         
@@ -486,12 +575,14 @@ Exemples:
   python workflow_espace.py --keyword "BOURGET" --no-cache
   python workflow_espace.py --keyword "PARIS" --xml-source "data-input/XML_SIA_2025-10-02.xml"
   python workflow_espace.py --keyword "AVORD" --launch
+  python workflow_espace.py --keyword "TMA" --altitude 5000 --launch
 
 Le workflow recherche automatiquement :
   1. D'abord dans la base de données
   2. Si pas trouvé, dans le fichier XML source
   3. Extrait et importe les espaces trouvés dans le XML
   4. Génère les KML avec cache par volume
+  5. Filtre les espaces par altitude si spécifié
         """
     )
     
@@ -505,6 +596,8 @@ Le workflow recherche automatiquement :
                        help='Désactiver le cache KML par volume (mode legacy)')
     parser.add_argument('--launch', action='store_true',
                        help='Lancer Google Earth Pro avec le fichier d\'export consolidé')
+    parser.add_argument('--altitude', type=int,
+                       help='Exclure les espaces dont le plancher est >= à cette altitude (en pieds)')
     
     args = parser.parse_args()
     
@@ -518,7 +611,7 @@ Le workflow recherche automatiquement :
         print("   Le workflow pourra quand même fonctionner avec le XML source")
     
     # Créer et exécuter le workflow
-    workflow = WorkflowEspace(args.database, args.xml_source)
+    workflow = WorkflowEspace(args.database, args.xml_source, args.altitude)
     workflow.use_cache = not args.no_cache  # Configurer l'usage du cache
     workflow.launch_google_earth = args.launch  # Configurer le lancement de Google Earth
     

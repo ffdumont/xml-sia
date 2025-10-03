@@ -357,7 +357,7 @@ class GoogleEarthExporter:
     def export_with_filters(self, keyword: str = None, space_type: str = None, 
                            space_class: str = None, max_results: int = None,
                            case_sensitive: bool = False, output_path: str = None,
-                           force_regenerate: bool = False) -> bool:
+                           force_regenerate: bool = False, altitude_max: int = None) -> bool:
         """
         Export avec filtrage avancé (similaire à list_entities.py)
         
@@ -369,6 +369,7 @@ class GoogleEarthExporter:
             case_sensitive: Recherche sensible à la casse
             output_path: Fichier de sortie
             force_regenerate: Force la régénération du cache
+            altitude_max: Exclure les espaces dont le plancher est >= à cette altitude (pieds)
             
         Returns:
             True si succès, False sinon
@@ -411,6 +412,30 @@ class GoogleEarthExporter:
                 """
                 params.append(space_class.upper())
             
+            # Filtre par altitude maximale (exclure les espaces dont le plancher est >= altitude_max)
+            if altitude_max:
+                query += """
+                AND (
+                    SELECT MIN(
+                        CASE 
+                            WHEN v.plancher_ref_unite LIKE '%FL%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                            THEN CAST(v.plancher AS INTEGER) * 100
+                            WHEN v.plancher_ref_unite LIKE '%ft%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                            THEN CAST(v.plancher AS INTEGER)
+                            WHEN v.plancher_ref_unite LIKE '%m%' AND v.plancher != 'SFC' AND v.plancher != 'GND'
+                            THEN CAST(v.plancher AS INTEGER) * 3.28084
+                            WHEN v.plancher = 'SFC' OR v.plancher = 'GND'
+                            THEN 0
+                            ELSE 0
+                        END
+                    )
+                    FROM volumes v
+                    JOIN parties p ON v.partie_ref = p.pk
+                    WHERE p.espace_ref = e.pk
+                ) < ?
+                """
+                params.append(altitude_max)
+            
             # Tri et limite
             query += " ORDER BY e.lk"
             if max_results:
@@ -440,6 +465,8 @@ class GoogleEarthExporter:
                 title_parts.append(f"type {space_type}")
             if space_class:
                 title_parts.append(f"classe {space_class}")
+            if altitude_max:
+                title_parts.append(f"plancher < {altitude_max} ft")
             
             title = f"Espaces aériens - {', '.join(title_parts)}" if title_parts else "Export d'espaces aériens"
             
@@ -503,7 +530,10 @@ class GoogleEarthExporter:
             
             description.text = desc_text.strip()
             
-            # Traiter chaque espace directement dans le document (sans dossier intermédiaire)
+            # Organiser les espaces par type dans des dossiers
+            spaces_by_type = {}
+            
+            # Grouper les espaces par type
             for espace_lk in espace_lks:
                 print(f"   📋 Traitement de {espace_lk}...")
                 
@@ -520,23 +550,57 @@ class GoogleEarthExporter:
                         print(f"      ⚠️ Aucune partie trouvée pour: {espace_lk}")
                         continue
                     
-                    # Ajouter les styles spécifiques à cet espace
-                    self._add_space_specific_styles(document, airspace, parts)
+                    # Grouper par type
+                    space_type = airspace['type_espace']
+                    if space_type not in spaces_by_type:
+                        spaces_by_type[space_type] = []
                     
-                    # Créer un dossier pour cet espace directement dans le document
-                    space_folder = ET.SubElement(document, 'Folder')
-                    space_folder_name = ET.SubElement(space_folder, 'name')
-                    space_folder_name.text = airspace['lk']  # Utiliser directement le lk
+                    spaces_by_type[space_type].append({
+                        'airspace': airspace,
+                        'parts': parts
+                    })
                     
-                    # Ajouter chaque partie avec le bon style
-                    for part in parts:
-                        self._add_part_to_folder_with_colors(space_folder, part, airspace)
-                    
-                    print(f"      ✅ {len(parts)} partie(s) ajoutée(s)")
+                    print(f"      ✅ {len(parts)} partie(s) trouvée(s) - Type: {space_type}")
                     
                 except Exception as e:
                     print(f"      ❌ Erreur traitement {espace_lk}: {str(e)[:50]}...")
                     continue
+            
+            # Créer les dossiers par type et ajouter les espaces
+            for space_type in sorted(spaces_by_type.keys()):
+                spaces_list = spaces_by_type[space_type]
+                
+                print(f"   📁 Création dossier type: {space_type} ({len(spaces_list)} espace(s))")
+                
+                # Créer un dossier pour ce type d'espace
+                type_folder = ET.SubElement(document, 'Folder')
+                type_folder_name = ET.SubElement(type_folder, 'name')
+                type_folder_name.text = f"{space_type} ({len(spaces_list)})"
+                
+                # Description du dossier type
+                type_folder_description = ET.SubElement(type_folder, 'description')
+                type_folder_description.text = f"Espaces de type {space_type} - {len(spaces_list)} espace(s)"
+                
+                # Ajouter chaque espace dans ce dossier type
+                for space_info in spaces_list:
+                    airspace = space_info['airspace']
+                    parts = space_info['parts']
+                    
+                    # Ajouter les styles spécifiques à cet espace
+                    self._add_space_specific_styles(document, airspace, parts)
+                    
+                    # Créer un dossier pour cet espace dans le dossier type
+                    space_folder = ET.SubElement(type_folder, 'Folder')
+                    space_folder_name = ET.SubElement(space_folder, 'name')
+                    space_folder_name.text = airspace['nom']  # Nom lisible plutôt que LK
+                    
+                    # Description de l'espace
+                    space_folder_description = ET.SubElement(space_folder, 'description')
+                    space_folder_description.text = f"Espace: {airspace['lk']}\nType: {airspace['type_espace']}\nNombre de parties: {len(parts)}"
+                    
+                    # Ajouter chaque partie avec le bon style
+                    for part in parts:
+                        self._add_part_to_folder_with_colors(space_folder, part, airspace)
             
             # Convertir en chaîne XML formatée
             rough_string = ET.tostring(kml, encoding='unicode')
@@ -681,22 +745,77 @@ class GoogleEarthExporter:
         volume_style_url = ET.SubElement(volume_placemark, 'styleUrl')
         volume_style_url.text = f'#volumeStyle_{airspace["pk"]}'
         
-        volume_polygon = ET.SubElement(volume_placemark, 'Polygon')
-        volume_extrude = ET.SubElement(volume_polygon, 'extrude')
-        volume_extrude.text = '1'
-        
-        volume_altitude_mode = ET.SubElement(volume_polygon, 'altitudeMode')
-        volume_altitude_mode.text = 'absolute'
-        
-        volume_outer = ET.SubElement(volume_polygon, 'outerBoundaryIs')
-        volume_ring = ET.SubElement(volume_outer, 'LinearRing')
-        volume_coords = ET.SubElement(volume_ring, 'coordinates')
-        
-        volume_coord_strings = []
-        for lat, lon in coordinates:
-            volume_coord_strings.append(f"{lon},{lat},{max_ceiling}")
-        volume_coords.text = ' '.join(volume_coord_strings)
+        # Utiliser la géométrie 3D complète (plancher + plafond + murs)
+        self._create_multigeometry_3d(volume_placemark, coordinates, min_floor, max_ceiling)
     
+    def _create_multigeometry_3d(self, parent_element, coordinates, min_floor, max_ceiling):
+        """
+        Crée une géométrie 3D complète (plancher + plafond + murs) sous un élément parent
+        
+        Args:
+            parent_element: Element XML parent où ajouter la MultiGeometry
+            coordinates: Liste de tuples (lat, lon) définissant le contour
+            min_floor: Altitude du plancher en mètres
+            max_ceiling: Altitude du plafond en mètres
+        """
+        import xml.etree.ElementTree as ET
+        
+        # Géométrie 3D complète (plancher + plafond + murs)
+        multi_geometry = ET.SubElement(parent_element, 'MultiGeometry')
+        
+        # 1. Polygone plancher
+        floor_polygon = ET.SubElement(multi_geometry, 'Polygon')
+        floor_altitude_mode = ET.SubElement(floor_polygon, 'altitudeMode')
+        floor_altitude_mode.text = 'absolute'
+        floor_outer = ET.SubElement(floor_polygon, 'outerBoundaryIs')
+        floor_ring = ET.SubElement(floor_outer, 'LinearRing')
+        floor_coords = ET.SubElement(floor_ring, 'coordinates')
+        
+        # Coordonnées plancher (sens horaire pour face vers le bas)
+        floor_coord_strings = []
+        for lat, lon in reversed(coordinates):  # Inverser pour orientation correcte
+            floor_coord_strings.append(f"{lon},{lat},{min_floor}")
+        floor_coords.text = ' '.join(floor_coord_strings)
+        
+        # 2. Polygone plafond  
+        ceiling_polygon = ET.SubElement(multi_geometry, 'Polygon')
+        ceiling_altitude_mode = ET.SubElement(ceiling_polygon, 'altitudeMode')
+        ceiling_altitude_mode.text = 'absolute'
+        ceiling_outer = ET.SubElement(ceiling_polygon, 'outerBoundaryIs')
+        ceiling_ring = ET.SubElement(ceiling_outer, 'LinearRing')
+        ceiling_coords = ET.SubElement(ceiling_ring, 'coordinates')
+        
+        # Coordonnées plafond (sens antihoraire pour face vers le haut)
+        ceiling_coord_strings = []
+        for lat, lon in coordinates:
+            ceiling_coord_strings.append(f"{lon},{lat},{max_ceiling}")
+        ceiling_coords.text = ' '.join(ceiling_coord_strings)
+        
+        # 3. Murs (un polygone vertical par segment)
+        for i in range(len(coordinates) - 1):  # -1 car dernier point = premier
+            lat1, lon1 = coordinates[i]
+            lat2, lon2 = coordinates[i + 1]
+            
+            # Créer un polygone vertical pour ce segment
+            wall_polygon = ET.SubElement(multi_geometry, 'Polygon')
+            wall_altitude_mode = ET.SubElement(wall_polygon, 'altitudeMode')
+            wall_altitude_mode.text = 'absolute'
+            wall_outer = ET.SubElement(wall_polygon, 'outerBoundaryIs')
+            wall_ring = ET.SubElement(wall_outer, 'LinearRing')
+            wall_coords = ET.SubElement(wall_ring, 'coordinates')
+            
+            # Rectangle vertical : bas1 -> haut1 -> haut2 -> bas2 -> bas1
+            wall_coord_strings = [
+                f"{lon1},{lat1},{min_floor}",      # Point 1 plancher
+                f"{lon1},{lat1},{max_ceiling}",    # Point 1 plafond
+                f"{lon2},{lat2},{max_ceiling}",    # Point 2 plafond
+                f"{lon2},{lat2},{min_floor}",      # Point 2 plancher
+                f"{lon1},{lat1},{min_floor}"       # Fermeture
+            ]
+            wall_coords.text = ' '.join(wall_coord_strings)
+        
+        return multi_geometry
+
     def _add_part_to_folder(self, parent_folder, part, airspace):
         """Méthode legacy - utilise la nouvelle méthode avec couleurs"""
         return self._add_part_to_folder_with_colors(parent_folder, part, airspace)
@@ -704,6 +823,7 @@ class GoogleEarthExporter:
     def _parse_contour_coordinates(self, contour: str):
         """Parse les coordonnées depuis le champ 'contour'"""
         import re
+        import math
         
         coordinates = []
         
@@ -717,6 +837,42 @@ class GoogleEarthExporter:
             if not line:
                 continue
             
+            # Vérifier s'il y a une définition de cercle
+            circle_pattern = r'cir\(([-+]?\d+\.?\d*)\s+([-+]?\d+\.?\d*):(\d+\.?\d*):([A-Z]+)'
+            circle_match = re.search(circle_pattern, line)
+            
+            if circle_match:
+                # C'est un cercle - générer des points sur le périmètre
+                center_lat = float(circle_match.group(1))
+                center_lon = float(circle_match.group(2))
+                radius = float(circle_match.group(3))
+                unit = circle_match.group(4)
+                
+                # Convertir le rayon en degrés (approximation)
+                if unit == 'NM':  # Nautical Miles
+                    radius_deg = radius / 60.0  # 1 degré ≈ 60 NM
+                elif unit == 'KM':
+                    radius_deg = radius / 111.0  # 1 degré ≈ 111 km
+                elif unit == 'M':
+                    radius_deg = radius / 111000.0  # 1 degré ≈ 111000 m
+                else:
+                    radius_deg = radius / 60.0  # Par défaut, supposer NM
+                
+                # Générer 36 points sur le cercle (tous les 10 degrés)
+                num_points = 36
+                for i in range(num_points + 1):  # +1 pour fermer le cercle
+                    angle = (i * 2 * math.pi) / num_points
+                    
+                    # Approximation simple (valable pour les petites distances)
+                    lat = center_lat + radius_deg * math.cos(angle)
+                    lon = center_lon + radius_deg * math.sin(angle) / math.cos(math.radians(center_lat))
+                    
+                    coordinates.append((lat, lon))
+                
+                print(f"   🔵 Cercle détecté: centre({center_lat:.3f}, {center_lon:.3f}), rayon {radius} {unit} → {len(coordinates)} points")
+                return coordinates
+            
+            # Sinon, parser les coordonnées classiques
             coord_pattern = r'(\d+\.?\d*)\s+(\d+\.?\d*)'
             matches = re.findall(coord_pattern, line)
             
@@ -732,12 +888,50 @@ class GoogleEarthExporter:
         
         return coordinates
     
+    def _estimate_surface_elevation(self, contour: str) -> float:
+        """
+        Estime l'élévation de surface basée sur la géométrie de l'espace
+        Approximation basée sur des données connues pour les régions françaises
+        """
+        if not contour:
+            return 0.0
+        
+        # Extraire les coordonnées pour estimer la région
+        coordinates = self._parse_contour_coordinates(contour)
+        if not coordinates:
+            return 0.0
+        
+        # Calculer le centre approximatif
+        center_lat = sum(coord[0] for coord in coordinates) / len(coordinates)
+        center_lon = sum(coord[1] for coord in coordinates) / len(coordinates)
+        
+        # Approximations basées sur les régions françaises
+        # Limoges area (45.8°N, 1.2°E) : ~350m
+        if 45.5 <= center_lat <= 46.2 and 0.8 <= center_lon <= 1.8:
+            return 350.0
+        
+        # Paris area (48.8°N, 2.3°E) : ~100m
+        elif 48.3 <= center_lat <= 49.3 and 1.8 <= center_lon <= 2.8:
+            return 100.0
+        
+        # Bourget area (proche Paris) : ~60m
+        elif 48.8 <= center_lat <= 49.0 and 2.3 <= center_lon <= 2.6:
+            return 60.0
+        
+        # France métropolitaine générale : ~200m (moyenne)
+        elif 42.0 <= center_lat <= 52.0 and -5.0 <= center_lon <= 10.0:
+            return 200.0
+        
+        # Défaut
+        return 0.0
+
     def _get_part_altitude_range(self, part):
         """Calcule la plage d'altitude pour une partie"""
         if not part['volumes']:
             return 0.0, 1000.0
         
-        surface_elevation = 0.0
+        # Estimer l'élévation de surface basée sur la géométrie
+        surface_elevation = self._estimate_surface_elevation(part.get('contour', ''))
         min_floor = float('inf')
         max_ceiling = float('-inf')
         
@@ -833,6 +1027,9 @@ python google_earth_export.py --space-type TMA --output all_tma.kml
 python google_earth_export.py --space-class D --output class_d_spaces.kml
 python google_earth_export.py --keyword "PARIS" --space-type TMA --max-results 10 --output paris_tma.kml
 
+# Filtrage par altitude (exclure les espaces dont le plancher est >= altitude)
+python google_earth_export.py --space-type TMA --altitude 10000 --output tma_basse_altitude.kml
+
 # Lancement automatique de Google Earth Pro
 python google_earth_export.py --single "[LF][TMA LE BOURGET]" --output bourget.kml --launch
 
@@ -890,6 +1087,8 @@ python google_earth_export.py --stats
                        help='Altitude minimum en pieds')
     parser.add_argument('--alt-max', type=int,
                        help='Altitude maximum en pieds')
+    parser.add_argument('--altitude', type=int,
+                       help='Exclure les espaces dont le plancher est >= à cette altitude (en pieds)')
     
     args = parser.parse_args()
     
@@ -936,7 +1135,8 @@ python google_earth_export.py --stats
                 max_results=args.max_results,
                 case_sensitive=args.case_sensitive,
                 output_path=args.output,
-                force_regenerate=args.force
+                force_regenerate=args.force,
+                altitude_max=args.altitude
             )
             
         elif args.single:

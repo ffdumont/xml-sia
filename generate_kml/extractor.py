@@ -166,8 +166,9 @@ class KMLExtractor:
     def parse_contour_coordinates(self, contour: str) -> List[Tuple[float, float]]:
         """
         Parse les coordonnées depuis le champ 'contour'
-        Identique à la version originale mais optimisé
+        Gère les coordonnées classiques ET les définitions géométriques (cercles)
         """
+        import math
         coordinates = []
         
         if not contour:
@@ -180,6 +181,42 @@ class KMLExtractor:
             if not line:
                 continue
             
+            # Vérifier s'il y a une définition de cercle
+            circle_pattern = r'cir\(([-+]?\d+\.?\d*)\s+([-+]?\d+\.?\d*):(\d+\.?\d*):([A-Z]+)'
+            circle_match = re.search(circle_pattern, line)
+            
+            if circle_match:
+                # C'est un cercle - générer des points sur le périmètre
+                center_lat = float(circle_match.group(1))
+                center_lon = float(circle_match.group(2))
+                radius = float(circle_match.group(3))
+                unit = circle_match.group(4)
+                
+                # Convertir le rayon en degrés (approximation)
+                if unit == 'NM':  # Nautical Miles
+                    radius_deg = radius / 60.0  # 1 degré ≈ 60 NM
+                elif unit == 'KM':
+                    radius_deg = radius / 111.0  # 1 degré ≈ 111 km
+                elif unit == 'M':
+                    radius_deg = radius / 111000.0  # 1 degré ≈ 111000 m
+                else:
+                    radius_deg = radius / 60.0  # Par défaut, supposer NM
+                
+                # Générer 36 points sur le cercle (tous les 10 degrés)
+                num_points = 36
+                for i in range(num_points + 1):  # +1 pour fermer le cercle
+                    angle = (i * 2 * math.pi) / num_points
+                    
+                    # Approximation simple (valable pour les petites distances)
+                    lat = center_lat + radius_deg * math.cos(angle)
+                    lon = center_lon + radius_deg * math.sin(angle) / math.cos(math.radians(center_lat))
+                    
+                    coordinates.append((lat, lon))
+                
+                print(f"   🔵 Cercle détecté: centre({center_lat:.3f}, {center_lon:.3f}), rayon {radius} {unit} → {len(coordinates)} points")
+                return coordinates
+            
+            # Sinon, parser les coordonnées classiques
             coord_pattern = r'(\d+\.?\d*)\s+(\d+\.?\d*)'
             matches = re.findall(coord_pattern, line)
             
@@ -241,6 +278,111 @@ class KMLExtractor:
         except (ValueError, TypeError):
             return 0.0
     
+    def create_multigeometry_3d(self, parent_element, coordinates, min_floor, max_ceiling):
+        """
+        Crée une géométrie 3D complète (plancher + plafond + murs) sous un élément parent
+        
+        Args:
+            parent_element: Element XML parent où ajouter la MultiGeometry
+            coordinates: Liste de tuples (lat, lon) définissant le contour
+            min_floor: Altitude du plancher en mètres
+            max_ceiling: Altitude du plafond en mètres
+        """
+        import xml.etree.ElementTree as ET
+        
+        # Géométrie 3D complète (plancher + plafond + murs)
+        multi_geometry = ET.SubElement(parent_element, 'MultiGeometry')
+        
+        # 1. Polygone plancher
+        floor_polygon = ET.SubElement(multi_geometry, 'Polygon')
+        floor_altitude_mode = ET.SubElement(floor_polygon, 'altitudeMode')
+        floor_altitude_mode.text = 'absolute'
+        floor_outer = ET.SubElement(floor_polygon, 'outerBoundaryIs')
+        floor_ring = ET.SubElement(floor_outer, 'LinearRing')
+        floor_coords = ET.SubElement(floor_ring, 'coordinates')
+        
+        # Coordonnées plancher (sens horaire pour face vers le bas)
+        floor_coord_strings = []
+        for lat, lon in reversed(coordinates):  # Inverser pour orientation correcte
+            floor_coord_strings.append(f"{lon},{lat},{min_floor}")
+        floor_coords.text = ' '.join(floor_coord_strings)
+        
+        # 2. Polygone plafond  
+        ceiling_polygon = ET.SubElement(multi_geometry, 'Polygon')
+        ceiling_altitude_mode = ET.SubElement(ceiling_polygon, 'altitudeMode')
+        ceiling_altitude_mode.text = 'absolute'
+        ceiling_outer = ET.SubElement(ceiling_polygon, 'outerBoundaryIs')
+        ceiling_ring = ET.SubElement(ceiling_outer, 'LinearRing')
+        ceiling_coords = ET.SubElement(ceiling_ring, 'coordinates')
+        
+        # Coordonnées plafond (sens antihoraire pour face vers le haut)
+        ceiling_coord_strings = []
+        for lat, lon in coordinates:
+            ceiling_coord_strings.append(f"{lon},{lat},{max_ceiling}")
+        ceiling_coords.text = ' '.join(ceiling_coord_strings)
+        
+        # 3. Murs (un polygone vertical par segment)
+        for i in range(len(coordinates) - 1):  # -1 car dernier point = premier
+            lat1, lon1 = coordinates[i]
+            lat2, lon2 = coordinates[i + 1]
+            
+            # Créer un polygone vertical pour ce segment
+            wall_polygon = ET.SubElement(multi_geometry, 'Polygon')
+            wall_altitude_mode = ET.SubElement(wall_polygon, 'altitudeMode')
+            wall_altitude_mode.text = 'absolute'
+            wall_outer = ET.SubElement(wall_polygon, 'outerBoundaryIs')
+            wall_ring = ET.SubElement(wall_outer, 'LinearRing')
+            wall_coords = ET.SubElement(wall_ring, 'coordinates')
+            
+            # Rectangle vertical : bas1 -> haut1 -> haut2 -> bas2 -> bas1
+            wall_coord_strings = [
+                f"{lon1},{lat1},{min_floor}",      # Point 1 plancher
+                f"{lon1},{lat1},{max_ceiling}",    # Point 1 plafond
+                f"{lon2},{lat2},{max_ceiling}",    # Point 2 plafond
+                f"{lon2},{lat2},{min_floor}",      # Point 2 plancher
+                f"{lon1},{lat1},{min_floor}"       # Fermeture
+            ]
+            wall_coords.text = ' '.join(wall_coord_strings)
+        
+        return multi_geometry
+
+    def estimate_surface_elevation(self, contour: str) -> float:
+        """
+        Estime l'élévation de surface basée sur la géométrie de l'espace
+        Approximation basée sur des données connues pour les régions françaises
+        """
+        if not contour:
+            return 0.0
+        
+        # Extraire les coordonnées pour estimer la région
+        coordinates = self.parse_contour_coordinates(contour)
+        if not coordinates:
+            return 0.0
+        
+        # Calculer le centre approximatif
+        center_lat = sum(coord[0] for coord in coordinates) / len(coordinates)
+        center_lon = sum(coord[1] for coord in coordinates) / len(coordinates)
+        
+        # Approximations basées sur les régions françaises
+        # Limoges area (45.8°N, 1.2°E) : ~350m
+        if 45.5 <= center_lat <= 46.2 and 0.8 <= center_lon <= 1.8:
+            return 350.0
+        
+        # Paris area (48.8°N, 2.3°E) : ~100m
+        elif 48.3 <= center_lat <= 49.3 and 1.8 <= center_lon <= 2.8:
+            return 100.0
+        
+        # Bourget area (proche Paris) : ~60m
+        elif 48.8 <= center_lat <= 49.0 and 2.3 <= center_lon <= 2.6:
+            return 60.0
+        
+        # France métropolitaine générale : ~200m (moyenne)
+        elif 42.0 <= center_lat <= 52.0 and -5.0 <= center_lon <= 10.0:
+            return 200.0
+        
+        # Défaut
+        return 0.0
+
     def get_part_altitude_range(self, part: Dict) -> Tuple[float, float]:
         """
         Calcule la plage d'altitude pour une partie (min plancher, max plafond)
@@ -248,7 +390,8 @@ class KMLExtractor:
         if not part['volumes']:
             return 0.0, 1000.0  # Valeurs par défaut
         
-        surface_elevation = 0.0
+        # Estimer l'élévation de surface basée sur la géométrie
+        surface_elevation = self.estimate_surface_elevation(part.get('contour', ''))
         min_floor = float('inf')
         max_ceiling = float('-inf')
         
@@ -393,23 +536,8 @@ class KMLExtractor:
             volume_style_url = ET.SubElement(volume_placemark, 'styleUrl')
             volume_style_url.text = '#volumeStyle'
             
-            # Géométrie du volume avec extrusion
-            volume_polygon = ET.SubElement(volume_placemark, 'Polygon')
-            volume_extrude = ET.SubElement(volume_polygon, 'extrude')
-            volume_extrude.text = '1'  # Activer l'extrusion
-            
-            volume_altitude_mode = ET.SubElement(volume_polygon, 'altitudeMode')
-            volume_altitude_mode.text = 'absolute'
-            
-            volume_outer = ET.SubElement(volume_polygon, 'outerBoundaryIs')
-            volume_ring = ET.SubElement(volume_outer, 'LinearRing')
-            volume_coords = ET.SubElement(volume_ring, 'coordinates')
-            
-            # Utiliser l'altitude du plafond pour l'extrusion (KML extrudera jusqu'au sol)
-            volume_coord_strings = []
-            for lat, lon in coordinates:
-                volume_coord_strings.append(f"{lon},{lat},{max_ceiling}")
-            volume_coords.text = ' '.join(volume_coord_strings)
+            # Utiliser la méthode utilitaire pour créer la géométrie 3D
+            self.create_multigeometry_3d(volume_placemark, coordinates, min_floor, max_ceiling)
         
         # Convertir en chaîne XML formatée
         rough_string = ET.tostring(kml, encoding='unicode')
